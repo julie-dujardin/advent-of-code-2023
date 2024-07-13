@@ -2,6 +2,8 @@ use std::collections::HashMap;
 use std::fs;
 
 pub fn test_trebuchet() {
+    // TODO unit tests
+    // TODO run them in ci
     assert_eq!(trebuchet1(), 55123);
     assert_eq!(trebuchet2(), 55260);
 }
@@ -18,7 +20,7 @@ fn trebuchet1() -> i32 {
         sum += number.parse::<i32>().unwrap()
     }
     println!("The calibration value is {sum}");
-    return sum;
+    sum
 }
 
 fn find_text_digit(line: &str, rev: bool) -> (usize, char) {
@@ -43,7 +45,7 @@ fn find_text_digit(line: &str, rev: bool) -> (usize, char) {
             ln = *int;
         }
     }
-    return (li, ln);
+    (li, ln)
 }
 
 fn trebuchet2() -> i32 {
@@ -51,26 +53,26 @@ fn trebuchet2() -> i32 {
     for line in fs::read_to_string("src/d1/input.txt").unwrap().lines(){
         let mut number = String::new();
 
-        let (li, ln) = find_text_digit(&line, false);
+        let (li, ln) = find_text_digit(line, false);
         for (i, a) in line.chars().enumerate() {
             if i >= li {
                 break
             }
-            if a.is_digit(10) {
+            if a.is_ascii_digit() {
                 number.push(a);
                 break;
             }
         }
-        if number.len() == 0 {
+        if number.is_empty() {
             number.push(ln)
         }
 
-        let (ri, rn) = find_text_digit(&line, true);
+        let (ri, rn) = find_text_digit(line, true);
         for (i, a) in line.chars().rev().enumerate() {
             if (line.len() - i) <= ri {
                 break
             }
-            if a.is_digit(10) {
+            if a.is_ascii_digit() {
                 number.push(a);
                 break;
             }
@@ -82,5 +84,5 @@ fn trebuchet2() -> i32 {
         sum += number.parse::<i32>().unwrap()
     }
     println!("The corrected calibration value is {sum}");
-    return sum;
+    sum
 }

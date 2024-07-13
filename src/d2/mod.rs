@@ -19,8 +19,9 @@ fn line_min_counts(line_split: Vec<&str>) -> HashMap<&str, i32> {
             maximums.insert(reveal_split[1], max(reveal_split[0].parse().unwrap(), maximums[reveal_split[1]]));
         }
     }
+    // TODO logging
     // println!("game {game_number} maximums: {maximums:?}");
-    return maximums;
+    maximums
 }
 
 fn cubes1() -> i32 {
@@ -35,7 +36,7 @@ fn cubes1() -> i32 {
         }
     }
     println!("The sum of possible IDs is {sum}");
-    return sum;
+    sum
 }
 
 fn cubes2() -> i32 {
@@ -47,5 +48,5 @@ fn cubes2() -> i32 {
         sum += maximums["red"] * maximums["green"] * maximums["blue"]
     }
     println!("The sum of powers is {sum}");
-    return sum;
+    sum
 }
