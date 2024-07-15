@@ -1,17 +1,6 @@
 use std::collections::HashMap;
 use std::fs;
 
-pub fn test_gears() {
-    assert_eq!(gears1("src/d3/input_test0.txt"), 4533);  // select all
-    assert_eq!(gears1("src/d3/input_test1.txt"), 4361);  // provided test
-    assert_eq!(gears1("src/d3/input_test2.txt"), 3859);  // numbers at end of line
-    assert_eq!(gears1("src/d3/input.txt"), 537832);
-
-    assert_eq!(gears2("src/d3/input_test1.txt"), 467835);  // provided test
-    assert_eq!(gears2("src/d3/input_test2.txt"), 451490);  // numbers at end of line
-    assert_eq!(gears2("src/d3/input.txt"), 81939900);
-}
-
 fn coord_generator(start_x: i32, end_x: i32, line_y: i32) -> Vec<(i32, i32)> {
     let mut coords: Vec<(i32, i32)> = vec![
         (start_x -1, line_y),
@@ -26,9 +15,9 @@ fn coord_generator(start_x: i32, end_x: i32, line_y: i32) -> Vec<(i32, i32)> {
     coords
 }
 
-fn gears1(input_file: &str) -> i32 {
+fn gears1(file_path: &str) -> i32 {
     let mut sum = 0;
-    let file = fs::read_to_string(input_file).unwrap();
+    let file = fs::read_to_string(file_path).unwrap();
     let lines: Vec<&str> = file.lines().collect();
     for (y, line) in lines.iter().enumerate() {
         let mut number_start_index = -1;
@@ -62,10 +51,10 @@ fn gears1(input_file: &str) -> i32 {
     sum
 }
 
-fn gears2(input_file: &str) -> i32 {
+fn gears2(file_path: &str) -> i32 {
     let mut gear_candidates: HashMap<(i32, i32), Vec<i32>> = HashMap::new();
 
-    let file = fs::read_to_string(input_file).unwrap();
+    let file = fs::read_to_string(file_path).unwrap();
     let lines: Vec<&str> = file.lines().collect();
     for (y, line) in lines.iter().enumerate() {
         let mut number_start_index = -1;
@@ -108,4 +97,22 @@ fn gears2(input_file: &str) -> i32 {
 
     println!("The sum of gear ratios is {sum}");
     sum
+}
+
+mod tests {
+    use super::*;
+
+    #[test]
+    fn p1() {
+        assert_eq!(gears1("src/d3/input_test0.txt"), 4533);  // select all
+        assert_eq!(gears1("src/d3/input_test1.txt"), 4361);  // provided test
+        assert_eq!(gears1("src/d3/input_test2.txt"), 3859);  // numbers at end of line
+        assert_eq!(gears1("src/d3/input.txt"), 537832);
+    }
+    #[test]
+    fn p2() {
+        assert_eq!(gears2("src/d3/input_test1.txt"), 467835);  // provided test
+        assert_eq!(gears2("src/d3/input_test2.txt"), 451490);  // numbers at end of line
+        assert_eq!(gears2("src/d3/input.txt"), 81939900);
+    }
 }

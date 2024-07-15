@@ -2,11 +2,6 @@ use std::cmp::max;
 use std::collections::HashMap;
 use std::fs;
 
-pub fn test_cubes() {
-    assert_eq!(cubes1(), 2406);
-    assert_eq!(cubes2(), 78375);
-}
-
 fn line_min_counts(line_split: Vec<&str>) -> HashMap<&str, i32> {
     let mut maximums = HashMap::from([
         ("red", 0),
@@ -24,9 +19,9 @@ fn line_min_counts(line_split: Vec<&str>) -> HashMap<&str, i32> {
     maximums
 }
 
-fn cubes1() -> i32 {
+fn cubes1(file_path: &str) -> i32 {
     let mut sum= 0;
-    for line in fs::read_to_string("src/d2/input.txt").unwrap().lines(){
+    for line in fs::read_to_string(file_path).unwrap().lines(){
         let line_split: Vec<&str> = line.split(": ").collect();
         let game_number: i32 = line_split[0][5..].parse().unwrap();
 
@@ -39,9 +34,9 @@ fn cubes1() -> i32 {
     sum
 }
 
-fn cubes2() -> i32 {
+fn cubes2(file_path: &str) -> i32 {
     let mut sum= 0;
-    for line in fs::read_to_string("src/d2/input.txt").unwrap().lines(){
+    for line in fs::read_to_string(file_path).unwrap().lines(){
         let line_split: Vec<&str> = line.split(": ").collect();
 
         let maximums = line_min_counts(line_split);
@@ -49,4 +44,19 @@ fn cubes2() -> i32 {
     }
     println!("The sum of powers is {sum}");
     sum
+}
+
+mod tests {
+    use super::*;
+
+    #[test]
+    fn p1() {
+        assert_eq!(cubes1("src/d2/input_test1.txt"), 8);
+        assert_eq!(cubes1("src/d2/input.txt"), 2406);
+    }
+    #[test]
+    fn p2() {
+        assert_eq!(cubes2("src/d2/input_test2.txt"), 2286);
+        assert_eq!(cubes2("src/d2/input.txt"), 78375);
+    }
 }

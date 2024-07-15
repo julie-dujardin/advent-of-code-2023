@@ -1,18 +1,11 @@
 use std::collections::HashMap;
 use std::fs;
 
-pub fn test_trebuchet() {
-    // TODO unit tests
-    // TODO run them in ci
-    assert_eq!(trebuchet1(), 55123);
-    assert_eq!(trebuchet2(), 55260);
-}
-
-fn trebuchet1() -> i32 {
+fn trebuchet1(file_path: &str) -> i32 {
     let mut sum= 0;
     // TODO line buffering
     // TODO line multithreading
-    for line in fs::read_to_string("src/d1/input.txt").unwrap().lines(){
+    for line in fs::read_to_string(file_path).unwrap().lines(){
         let mut number = String::new();
         let digits: Vec<&str> = line.matches(char::is_numeric).collect();
         number.push_str(digits[0]);
@@ -48,9 +41,9 @@ fn find_text_digit(line: &str, rev: bool) -> (usize, char) {
     (li, ln)
 }
 
-fn trebuchet2() -> i32 {
+fn trebuchet2(file_path: &str) -> i32 {
     let mut sum= 0;
-    for line in fs::read_to_string("src/d1/input.txt").unwrap().lines(){
+    for line in fs::read_to_string(file_path).unwrap().lines(){
         let mut number = String::new();
 
         let (li, ln) = find_text_digit(line, false);
@@ -85,4 +78,19 @@ fn trebuchet2() -> i32 {
     }
     println!("The corrected calibration value is {sum}");
     sum
+}
+
+mod tests {
+    use super::*;
+
+    #[test]
+    fn p1() {
+        assert_eq!(trebuchet1("src/d1/input_test1.txt"), 142);
+        assert_eq!(trebuchet1("src/d1/input.txt"), 55123);
+    }
+    #[test]
+    fn p2() {
+        assert_eq!(trebuchet2("src/d1/input_test2.txt"), 281);
+        assert_eq!(trebuchet2("src/d1/input.txt"), 55260);
+    }
 }
