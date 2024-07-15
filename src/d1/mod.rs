@@ -2,10 +2,10 @@ use std::collections::HashMap;
 use std::fs;
 
 fn trebuchet1(file_path: &str) -> i32 {
-    let mut sum= 0;
+    let mut sum = 0;
     // TODO line buffering
     // TODO line multithreading
-    for line in fs::read_to_string(file_path).unwrap().lines(){
+    for line in fs::read_to_string(file_path).unwrap().lines() {
         let mut number = String::new();
         let digits: Vec<&str> = line.matches(char::is_numeric).collect();
         number.push_str(digits[0]);
@@ -29,10 +29,14 @@ fn find_text_digit(line: &str, rev: bool) -> (usize, char) {
         ("nine", '9'),
     ]);
 
-    let mut li = if rev {0} else {line.len() + 1};
+    let mut li = if rev { 0 } else { line.len() + 1 };
     let mut ln = '0';
     for (digit, int) in &digits {
-        let index = if rev {line.rfind(digit)} else {line.find(digit)};
+        let index = if rev {
+            line.rfind(digit)
+        } else {
+            line.find(digit)
+        };
         if index.is_some() && ((!rev && index.unwrap() < li) || (rev && index.unwrap() >= li)) {
             li = index.unwrap();
             ln = *int;
@@ -42,14 +46,14 @@ fn find_text_digit(line: &str, rev: bool) -> (usize, char) {
 }
 
 fn trebuchet2(file_path: &str) -> i32 {
-    let mut sum= 0;
-    for line in fs::read_to_string(file_path).unwrap().lines(){
+    let mut sum = 0;
+    for line in fs::read_to_string(file_path).unwrap().lines() {
         let mut number = String::new();
 
         let (li, ln) = find_text_digit(line, false);
         for (i, a) in line.chars().enumerate() {
             if i >= li {
-                break
+                break;
             }
             if a.is_ascii_digit() {
                 number.push(a);
@@ -63,7 +67,7 @@ fn trebuchet2(file_path: &str) -> i32 {
         let (ri, rn) = find_text_digit(line, true);
         for (i, a) in line.chars().rev().enumerate() {
             if (line.len() - i) <= ri {
-                break
+                break;
             }
             if a.is_ascii_digit() {
                 number.push(a);

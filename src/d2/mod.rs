@@ -3,15 +3,14 @@ use std::collections::HashMap;
 use std::fs;
 
 fn line_min_counts(line_split: Vec<&str>) -> HashMap<&str, i32> {
-    let mut maximums = HashMap::from([
-        ("red", 0),
-        ("green", 0),
-        ("blue", 0),
-    ]);
+    let mut maximums = HashMap::from([("red", 0), ("green", 0), ("blue", 0)]);
     for reveals in line_split[1].split("; ") {
         for reveal in reveals.split(", ") {
             let reveal_split: Vec<&str> = reveal.split(' ').collect();
-            maximums.insert(reveal_split[1], max(reveal_split[0].parse().unwrap(), maximums[reveal_split[1]]));
+            maximums.insert(
+                reveal_split[1],
+                max(reveal_split[0].parse().unwrap(), maximums[reveal_split[1]]),
+            );
         }
     }
     // TODO logging
@@ -20,8 +19,8 @@ fn line_min_counts(line_split: Vec<&str>) -> HashMap<&str, i32> {
 }
 
 fn cubes1(file_path: &str) -> i32 {
-    let mut sum= 0;
-    for line in fs::read_to_string(file_path).unwrap().lines(){
+    let mut sum = 0;
+    for line in fs::read_to_string(file_path).unwrap().lines() {
         let line_split: Vec<&str> = line.split(": ").collect();
         let game_number: i32 = line_split[0][5..].parse().unwrap();
 
@@ -35,8 +34,8 @@ fn cubes1(file_path: &str) -> i32 {
 }
 
 fn cubes2(file_path: &str) -> i32 {
-    let mut sum= 0;
-    for line in fs::read_to_string(file_path).unwrap().lines(){
+    let mut sum = 0;
+    for line in fs::read_to_string(file_path).unwrap().lines() {
         let line_split: Vec<&str> = line.split(": ").collect();
 
         let maximums = line_min_counts(line_split);
