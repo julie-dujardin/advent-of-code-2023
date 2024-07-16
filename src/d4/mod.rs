@@ -1,7 +1,7 @@
 use std::collections::{HashMap, HashSet};
 use std::fs;
 
-fn numbers_str_to_vec(s: &str) -> HashSet<i32> {
+fn numbers_str_to_hashset(s: &str) -> HashSet<i32> {
     let mut nums = HashSet::new();
     for number_s in s.split(' ').filter(|&x| !x.is_empty()) {
         nums.insert(number_s.parse().unwrap());
@@ -15,8 +15,8 @@ fn scratchcards1(file_path: &str, offset: usize) -> i32 {
     for line in fs::read_to_string(file_path).unwrap().lines() {
         let mut number_groups = line[offset..].split(" | ");
 
-        let winning_nums = numbers_str_to_vec(number_groups.next().unwrap());
-        let have_nums = numbers_str_to_vec(number_groups.next().unwrap());
+        let winning_nums = numbers_str_to_hashset(number_groups.next().unwrap());
+        let have_nums = numbers_str_to_hashset(number_groups.next().unwrap());
 
         let card_win_count = have_nums.intersection(&winning_nums).count();
         if card_win_count > 0 {
@@ -42,15 +42,15 @@ fn scratchcards2(file_path: &str, offset: usize) -> i32 {
 
         let mut number_groups = line[offset..].split(" | ");
 
-        let winning_nums = numbers_str_to_vec(number_groups.next().unwrap());
-        let have_nums = numbers_str_to_vec(number_groups.next().unwrap());
+        let winning_nums = numbers_str_to_hashset(number_groups.next().unwrap());
+        let have_nums = numbers_str_to_hashset(number_groups.next().unwrap());
 
         let card_win_count = have_nums.intersection(&winning_nums).count();
         if card_win_count > 0 {
             for j in i + 1..card_win_count + i + 1 {
                 copy_counts
                     .entry(j)
-                    .and_modify(|e| *e+=multiplier)
+                    .and_modify(|e| *e += multiplier)
                     .or_insert(multiplier);
             }
         }
@@ -60,13 +60,14 @@ fn scratchcards2(file_path: &str, offset: usize) -> i32 {
     sum
 }
 
+#[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
     fn n2vec() {
         assert_eq!(
-            numbers_str_to_vec(" 51 58  5 54 "),
+            numbers_str_to_hashset(" 51 58  5 54 "),
             HashSet::from([51, 58, 5, 54])
         );
     }

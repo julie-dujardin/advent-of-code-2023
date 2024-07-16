@@ -45,6 +45,7 @@ fn cubes2(file_path: &str) -> i32 {
     sum
 }
 
+#[cfg(test)]
 mod tests {
     use super::*;
 
