@@ -56,6 +56,6 @@ mod tests {
     #[test]
     fn p2() {
         assert_eq!(race1("src/d6/input_test2.txt"), 71503); // provided test
-        race1("src/d6/input2.txt");
+        assert_eq!(race1("src/d6/input2.txt"), 34278221);
     }
 }
