@@ -1,8 +1,6 @@
-use std::cmp::Ordering;
-use std::collections::{BTreeMap, HashMap};
+use std::collections::HashMap;
 use std::fs;
 use std::ops::Index;
-use std::ptr::hash;
 
 const CARDS_SORTED1: [char; 13] = [
     '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A',

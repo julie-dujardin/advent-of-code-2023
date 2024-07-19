@@ -28,7 +28,7 @@ fn race1(file_path: &str) -> i32 {
     for (time, record_distance) in races {
         let mut solution_start =
             (time as f64 - (((-time).pow(2) - 4 * record_distance) as f64).sqrt()) / 2.;
-        let mut solution_end =
+        let solution_end =
             (time as f64 + (((-time).pow(2) - 4 * record_distance) as f64).sqrt()) / 2.;
 
         // We need to do better, not just match the record
