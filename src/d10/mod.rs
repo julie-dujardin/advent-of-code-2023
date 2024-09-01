@@ -74,7 +74,7 @@ fn maze1(file_path: &str) -> isize {
         maze_len += 1;
 
         let next_delta = if reverse {
-            (-TILES[&curr_tile].0.0, -TILES[&curr_tile].0.1)
+            (-TILES[&curr_tile].0 .0, -TILES[&curr_tile].0 .1)
         } else {
             TILES[&curr_tile].1
         };
@@ -82,7 +82,7 @@ fn maze1(file_path: &str) -> isize {
         curr_pos = add_pos(curr_pos, next_delta);
         curr_tile = maze.get(curr_pos.0, curr_pos.1);
         if curr_tile == 'S' {
-            break
+            break;
         }
         reverse = TILES[&curr_tile].0 != next_delta
     }
@@ -109,7 +109,9 @@ mod tests {
 
     #[test]
     fn p2() {
-        assert_eq!(maze2("src/d10/input_test1_simple.txt"), 2); // provided test
+        assert_eq!(maze2("src/d10/input_test3.txt"), 4); // provided test
+        assert_eq!(maze2("src/d10/input_test4.txt"), 8); // provided test
+        assert_eq!(maze2("src/d10/input_test5.txt"), 10); // provided test
         assert_eq!(maze2("src/d10/input.txt"), 1);
     }
 }
