@@ -1,6 +1,24 @@
 use std::collections::HashMap;
 use std::fs;
 
+// https://github.com/TheAlgorithms/Rust/blob/master/src/math/lcm_of_n_numbers.rs
+pub fn lcm(nums: Vec<usize>) -> usize {
+    if nums.len() == 1 {
+        return nums[0];
+    }
+    let a = nums[0];
+    let b = lcm(Vec::from(&nums[1..]));
+    a * b / gcd_of_two_numbers(a, b)
+}
+
+// https://github.com/TheAlgorithms/Rust/blob/master/src/math/lcm_of_n_numbers.rs
+fn gcd_of_two_numbers(a: usize, b: usize) -> usize {
+    if b == 0 {
+        return a;
+    }
+    gcd_of_two_numbers(b, a % b)
+}
+
 fn parse_file(file_path: &str) -> (String, HashMap<String, (String, String)>) {
     let file = fs::read_to_string(file_path).unwrap();
     let mut file_lines = file.lines();
@@ -33,29 +51,33 @@ fn maze1(file_path: &str) -> usize {
     steps
 }
 
-fn maze2(file_path: &str) -> usize {
-    let (instructions, nodes) = parse_file(file_path);
-
-    let mut curr_nodes: Vec<&String> = Vec::new();
-    for node in nodes.keys().filter(|&x| x.chars().nth(2).unwrap() == 'A') {
-        curr_nodes.push(node);
-    };
+fn solve_path2(instructions: &String, nodes: &HashMap<String, (String, String)>, start_node: &String) -> usize {
+    let mut curr_node = start_node;
     let mut steps = 0;
-    while !curr_nodes.iter().all(|x| x.chars().nth(2).unwrap() == 'Z') {
+    while curr_node.chars().nth(2).unwrap() != 'Z' {
         let curr_instruction = instructions.chars().nth(steps % instructions.len()).unwrap();
-        let mut next_nodes = Vec::new();
-        for curr_node in &curr_nodes {
-            match curr_instruction {
-                'L' => next_nodes.push(&nodes.get(*curr_node).unwrap().0),
-                'R' => next_nodes.push(&nodes.get(*curr_node).unwrap().1),
-                _ => panic!("Instruction is not either L or R")
-            };
-        }
-        curr_nodes = next_nodes;
+
+        curr_node = match curr_instruction {
+            'L' => &nodes.get(curr_node).unwrap().0,
+            'R' => &nodes.get(curr_node).unwrap().1,
+            _ => panic!("Instruction is not either L or R")
+        };
+
         steps += 1;
     }
 
     steps
+}
+
+fn maze2(file_path: &str) -> usize {
+    let (instructions, nodes) = parse_file(file_path);
+
+    let mut steps: Vec<usize> = Vec::new();
+    for node in nodes.keys().filter(|&x| x.chars().nth(2).unwrap() == 'A') {
+        steps.push(solve_path2(&instructions, &nodes, node));
+    };
+
+    lcm(steps)
 }
 
 #[cfg(test)]
@@ -72,5 +94,6 @@ mod tests {
     #[test]
     fn p2() {
         assert_eq!(maze2("src/d8/input_test3.txt"), 6); // provided test
+        assert_eq!(maze2("src/d8/input.txt"), 13289612809129);
     }
 }
