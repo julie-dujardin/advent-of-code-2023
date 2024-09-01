@@ -71,7 +71,7 @@ fn seed2(file_path: &str) -> isize {
             let mut new_old_ranges = Vec::new();
             let mut full_match_ranges = Vec::new();
 
-            for i in (0..seed_ranges.len()) {
+            for i in 0..seed_ranges.len() {
                 let old_start = seed_ranges[i].0;
                 let old_len = seed_ranges[i].1;
                 let old_end = old_start + old_len;

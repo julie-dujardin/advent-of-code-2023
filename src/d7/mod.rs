@@ -1,6 +1,5 @@
 use std::collections::HashMap;
 use std::fs;
-use std::ops::Index;
 
 const CARDS_SORTED1: [char; 13] = [
     '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A',
@@ -27,7 +26,7 @@ fn get_hand_type1(hand: &String) -> i32 {
         card_counts.entry(card).and_modify(|x| *x += 1).or_insert(1);
     }
     let mut card_counts_sorted: Vec<(&char, &i32)> = card_counts.iter().collect();
-    card_counts_sorted.sort_by(|a, b| b.1.cmp(&a.1));
+    card_counts_sorted.sort_by(|a, b| b.1.cmp(a.1));
 
     if *card_counts_sorted[0].1 == 5 {
         return 70; // Five of a kind
@@ -92,10 +91,10 @@ fn get_hand_type2(hand: &String) -> i32 {
     for card in hand.chars() {
         card_counts.entry(card).and_modify(|x| *x += 1).or_insert(1);
     }
-    let joker_count = card_counts.get(&'J').unwrap_or(&0).clone();
+    let joker_count = *card_counts.get(&'J').unwrap_or(&0);
     card_counts.remove(&'J');
     let mut card_counts_sorted: Vec<(&char, &i32)> = card_counts.iter().collect();
-    card_counts_sorted.sort_by(|a, b| b.1.cmp(&a.1));
+    card_counts_sorted.sort_by(|a, b| b.1.cmp(a.1));
 
     if joker_count == 5 || *card_counts_sorted[0].1 + joker_count >= 5 {
         return 70; // Five of a kind

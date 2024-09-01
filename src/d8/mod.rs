@@ -25,8 +25,11 @@ fn parse_file(file_path: &str) -> (String, HashMap<String, (String, String)>) {
     let instructions = String::from(file_lines.next().unwrap());
     file_lines.next();
     let mut nodes = HashMap::new();
-    for line in  file_lines{
-        nodes.insert(String::from(&line[0..3]), (String::from(&line[7..10]),String::from(&line[12..15])));
+    for line in file_lines {
+        nodes.insert(
+            String::from(&line[0..3]),
+            (String::from(&line[7..10]), String::from(&line[12..15])),
+        );
     }
     (instructions, nodes)
 }
@@ -37,12 +40,15 @@ fn maze1(file_path: &str) -> usize {
     let mut curr_node: &String = &String::from("AAA");
     let mut steps = 0;
     while curr_node != &String::from("ZZZ") {
-        let curr_instruction = instructions.chars().nth(steps % instructions.len()).unwrap();
+        let curr_instruction = instructions
+            .chars()
+            .nth(steps % instructions.len())
+            .unwrap();
 
         curr_node = match curr_instruction {
             'L' => &nodes.get(curr_node).unwrap().0,
             'R' => &nodes.get(curr_node).unwrap().1,
-            _ => panic!("Instruction is not either L or R")
+            _ => panic!("Instruction is not either L or R"),
         };
 
         steps += 1;
@@ -51,16 +57,23 @@ fn maze1(file_path: &str) -> usize {
     steps
 }
 
-fn solve_path2(instructions: &String, nodes: &HashMap<String, (String, String)>, start_node: &String) -> usize {
+fn solve_path2(
+    instructions: &String,
+    nodes: &HashMap<String, (String, String)>,
+    start_node: &String,
+) -> usize {
     let mut curr_node = start_node;
     let mut steps = 0;
     while curr_node.chars().nth(2).unwrap() != 'Z' {
-        let curr_instruction = instructions.chars().nth(steps % instructions.len()).unwrap();
+        let curr_instruction = instructions
+            .chars()
+            .nth(steps % instructions.len())
+            .unwrap();
 
         curr_node = match curr_instruction {
             'L' => &nodes.get(curr_node).unwrap().0,
             'R' => &nodes.get(curr_node).unwrap().1,
-            _ => panic!("Instruction is not either L or R")
+            _ => panic!("Instruction is not either L or R"),
         };
 
         steps += 1;
@@ -75,7 +88,7 @@ fn maze2(file_path: &str) -> usize {
     let mut steps: Vec<usize> = Vec::new();
     for node in nodes.keys().filter(|&x| x.chars().nth(2).unwrap() == 'A') {
         steps.push(solve_path2(&instructions, &nodes, node));
-    };
+    }
 
     lcm(steps)
 }
