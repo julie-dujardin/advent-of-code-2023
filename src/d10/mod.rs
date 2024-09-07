@@ -1,6 +1,8 @@
 use phf::phf_map;
 use std::fs;
 
+// (delta to get into the tile, delta to get out of it)
+// reverse the order, and multiply them by -1 to get the reverse direction
 static TILES: phf::Map<char, ((i32, i32), (i32, i32))> = phf_map! {
     '|' => ((0, 1), (0, 1)),
     '-' => ((-1, 0), (-1, 0)),
@@ -47,15 +49,18 @@ fn add_pos(start: (usize, usize), delta: (i32, i32)) -> (usize, usize) {
     )
 }
 
-fn get_first_move(maze: &Maze) -> ((usize, usize), bool) {
+fn get_first_move(maze: &Maze) -> ((usize, usize), bool, (i32, i32)) {
     for delta in SURROUNDING_COORDS {
         let check_pos = add_pos(maze.start_pos, delta);
-        let tile = &maze.get(check_pos.0, check_pos.1);
-        if TILES[tile].0 == delta {
-            return (check_pos, false);
-        }
-        if (-TILES[tile].1 .0, -TILES[tile].1 .1) == delta {
-            return (check_pos, true);
+        // overflow is a feature
+        if check_pos.0 < maze.lines.first().unwrap().len() && check_pos.1 < maze.lines.len() {
+            let tile = &maze.get(check_pos.0, check_pos.1);
+            if TILES[tile].0 == delta {
+                return (check_pos, false, delta);
+            }
+            if (-TILES[tile].1 .0, -TILES[tile].1 .1) == delta {
+                return (check_pos, true, delta);
+            }
         }
     }
     panic!("Didn't find a first move!!!")
@@ -63,7 +68,7 @@ fn get_first_move(maze: &Maze) -> ((usize, usize), bool) {
 
 fn maze1(file_path: &str) -> isize {
     let maze = parse_file(file_path);
-    let (mut curr_pos, mut reverse) = get_first_move(&maze);
+    let (mut curr_pos, mut reverse, _) = get_first_move(&maze);
     let mut curr_tile = maze.get(curr_pos.0, curr_pos.1);
     let mut maze_len = 0;
 
@@ -88,12 +93,18 @@ fn maze1(file_path: &str) -> isize {
 }
 
 fn clean_maze(maze: Maze) -> Maze {
-    let (mut curr_pos, mut reverse) = get_first_move(&maze);
+    // Remove all tiles that aren't part of the loop
+    // Also, replace the start tile with the real tile it replaced
+
+    let (mut curr_pos, reverse_start, delta_start) = get_first_move(&maze);
+    let mut reverse = reverse_start;
+    let mut delta_end = (0, 0);
     let mut curr_tile = maze.get(curr_pos.0, curr_pos.1);
     let mut maze_clean = Maze{
         lines: vec![vec!['.'; maze.lines.first().unwrap().len()]; maze.lines.len()],
         start_pos: maze.start_pos,
     };
+    maze_clean.lines[curr_pos.1][curr_pos.0] = curr_tile;
 
     loop {
         let next_delta = if reverse {
@@ -104,21 +115,49 @@ fn clean_maze(maze: Maze) -> Maze {
 
         curr_pos = add_pos(curr_pos, next_delta);
         curr_tile = maze.get(curr_pos.0, curr_pos.1);
-        // TODO replace S with real tile
-        maze_clean.lines[curr_pos.1][curr_pos.0] = curr_tile;
         if curr_tile == 'S' {
+            delta_end = next_delta;
             break;
         }
+        maze_clean.lines[curr_pos.1][curr_pos.0] = curr_tile;
         reverse = TILES[&curr_tile].0 != next_delta
     }
 
-    maze_clean
+    let mut delta_first = (delta_end, delta_start);
+    loop {
+        for (tile, delta) in TILES.entries() {
+            if *delta == delta_first {
+                maze_clean.lines[maze_clean.start_pos.1][maze_clean.start_pos.0] = *tile;
+                return maze_clean
+            }
+        }
+        // try reverse too
+        delta_first = ((-delta_start.0, -delta_start.1), (-delta_end.0, -delta_end.1));
+    }
 }
 
 fn maze2(file_path: &str) -> isize {
     let maze = parse_file(file_path);
     let maze_clean = clean_maze(maze);
-    0
+
+    let mut enclosed_count = 0;
+
+    // Cast a ray through the top of each line
+    // Any tile we visit after colliding with the loop an odd number of time is enclosed
+    // 7, -, and F don't count because they don't go all the way to the top
+    for line in maze_clean.lines {
+        let mut collision_count = 0;
+        for tile in line {
+            if let 'J' | '|' | 'L' = tile {
+                collision_count += 1;
+            }
+            else if '.' == tile && collision_count % 2 != 0 {
+                enclosed_count += 1;
+            }
+        }
+    }
+
+    enclosed_count
 }
 
 #[cfg(test)]
@@ -134,11 +173,11 @@ mod tests {
         assert_eq!(maze1("src/d10/input.txt"), 6947);
     }
 
-    // #[test]
-    // fn p2() {
-    //     assert_eq!(maze2("src/d10/input_test3.txt"), 4); // provided test
-    //     assert_eq!(maze2("src/d10/input_test4.txt"), 8); // provided test
-    //     assert_eq!(maze2("src/d10/input_test5.txt"), 10); // provided test
-    //     assert_eq!(maze2("src/d10/input.txt"), 1);
-    // }
+    #[test]
+    fn p2() {
+        assert_eq!(maze2("src/d10/input_test3.txt"), 4); // provided test
+        assert_eq!(maze2("src/d10/input_test4.txt"), 8); // provided test
+        assert_eq!(maze2("src/d10/input_test5.txt"), 10); // provided test
+        assert_eq!(maze2("src/d10/input.txt"), 273);
+    }
 }
