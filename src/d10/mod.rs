@@ -100,7 +100,7 @@ fn clean_maze(maze: Maze) -> Maze {
     let mut reverse = reverse_start;
     let mut delta_end = (0, 0);
     let mut curr_tile = maze.get(curr_pos.0, curr_pos.1);
-    let mut maze_clean = Maze{
+    let mut maze_clean = Maze {
         lines: vec![vec!['.'; maze.lines.first().unwrap().len()]; maze.lines.len()],
         start_pos: maze.start_pos,
     };
@@ -128,11 +128,14 @@ fn clean_maze(maze: Maze) -> Maze {
         for (tile, delta) in TILES.entries() {
             if *delta == delta_first {
                 maze_clean.lines[maze_clean.start_pos.1][maze_clean.start_pos.0] = *tile;
-                return maze_clean
+                return maze_clean;
             }
         }
         // try reverse too
-        delta_first = ((-delta_start.0, -delta_start.1), (-delta_end.0, -delta_end.1));
+        delta_first = (
+            (-delta_start.0, -delta_start.1),
+            (-delta_end.0, -delta_end.1),
+        );
     }
 }
 
@@ -150,8 +153,7 @@ fn maze2(file_path: &str) -> isize {
         for tile in line {
             if let 'J' | '|' | 'L' = tile {
                 collision_count += 1;
-            }
-            else if '.' == tile && collision_count % 2 != 0 {
+            } else if '.' == tile && collision_count % 2 != 0 {
                 enclosed_count += 1;
             }
         }
