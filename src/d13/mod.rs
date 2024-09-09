@@ -1,77 +1,67 @@
 use std::cmp::min;
 use std::fs;
-use std::hash::{DefaultHasher, Hash, Hasher};
 
-fn calculate_hash<T: Hash>(t: &T) -> u64 {
-    let mut s = DefaultHasher::new();
-    t.hash(&mut s);
-    s.finish()
-}
-
-fn parse_file(file_path: &str) -> Vec<(Vec<u64>, Vec<u64>)> {
-    // Compute the hashes of the lines & columns of each pattern
-    // (hashes of lines, hashes of columns)
-
+fn parse_file(file_path: &str) -> Vec<Vec<Vec<char>>> {
     let file = fs::read_to_string(file_path).unwrap();
-    let mut hashes = Vec::new();
+    let mut maps = Vec::new();
     for pattern in file.split("\n\n") {
-        let mut pattern_hashes = (Vec::new(), Vec::new());
-
-        let pattern_lines = pattern.lines().collect::<Vec<_>>();
-        for line in &pattern_lines {
-            pattern_hashes.0.push(calculate_hash(&line))
+        let mut map = Vec::new();
+        for line in pattern.lines() {
+            map.push(line.chars().collect());
         }
-
-        for x in 0..pattern_lines[0].len() {
-            let mut column = String::new();
-            for y in 0..pattern_lines.len() {
-                column.push(pattern_lines[y].chars().nth(x).unwrap())
-            }
-            pattern_hashes.1.push(calculate_hash(&column))
-        }
-
-        hashes.push(pattern_hashes);
+        maps.push(map)
     }
-    hashes
+    maps
 }
 
-fn check_hashes(hashes: Vec<u64>) -> usize {
-    let mut prev_hash = *hashes.first().unwrap();
+fn get_pos(map: &Vec<Vec<char>>, horizontal: bool, i: usize, j: usize) -> char{
+    if horizontal {map[i][j]} else { map[j][i] }
+}
 
-    for i in 1..hashes.len() {
-        let curr_hash = hashes[i];
+fn get_diff_count_for_lines(map: &Vec<Vec<char>>, horizontal: bool, i1: usize, i2: usize, wanted_diffs: usize) -> usize {
+    let l2_max = if horizontal {map.first().unwrap().len()} else { map.len() };
+    let mut diff_count = 0;
+    for j in 0..l2_max {
+        if get_pos(map, horizontal, i1, j) != get_pos(map, horizontal, i2 , j){
+            diff_count += 1;
+            if diff_count > wanted_diffs {
+                return diff_count
+            }
+        }
+    }
+    diff_count
+}
 
-        if curr_hash == prev_hash {
-            let mut found_mirror = true;
-            for check_delta in 1..min(hashes.len() - i, i) {
-                if hashes[i + check_delta] != hashes[i - 1 - check_delta] {
-                    found_mirror = false;
-                    break;
+fn get_line_count_before_mirror(map: &Vec<Vec<char>>, horizontal: bool, wanted_diffs: usize) -> usize {
+    let l1_max = if horizontal {map.len()} else { map.first().unwrap().len() };
+
+    for i in 1..l1_max {
+        let mut diff_count = get_diff_count_for_lines(map, horizontal, i, i-1, wanted_diffs);
+        if diff_count <= wanted_diffs {
+            for check_delta in 1..min(l1_max - i, i) {
+                diff_count += get_diff_count_for_lines(map, horizontal, i + check_delta, i - 1 - check_delta, wanted_diffs);
+                if diff_count > wanted_diffs {
+                    break
                 }
             }
-            if found_mirror {
-                return i;
-            }
         }
-
-        prev_hash = curr_hash;
+        if diff_count == wanted_diffs {
+            return i
+        }
     }
+
     0
 }
 
-fn mirrors1(file_path: &str) -> usize {
-    let hashes = parse_file(file_path);
+fn mirrors(file_path: &str, acceptable_diffs: usize) -> usize {
+    let maps = parse_file(file_path);
     let mut sum = 0;
 
-    for pattern_hashes in hashes {
-        sum += check_hashes(pattern_hashes.1) + 100 * check_hashes(pattern_hashes.0);
+    for map in maps {
+        sum += 100*get_line_count_before_mirror(&map, true, acceptable_diffs) + get_line_count_before_mirror(&map, false, acceptable_diffs);
     }
 
     sum
-}
-
-fn mirrors2(file_path: &str) -> usize {
-    0
 }
 
 #[cfg(test)]
@@ -80,13 +70,13 @@ mod tests {
 
     #[test]
     fn p1() {
-        assert_eq!(mirrors1("src/d13/input_test1.txt"), 405); // provided test
-        assert_eq!(mirrors1("src/d13/input.txt"), 33975);
+        assert_eq!(mirrors("src/d13/input_test1.txt", 0), 405); // provided test
+        assert_eq!(mirrors("src/d13/input.txt", 0), 33975);
     }
 
-    // #[test]
-    // fn p2() {
-    //     assert_eq!(mirrors2("src/d13/input_test1.txt"), 0); // provided test
-    //     assert_eq!(mirrors2("src/d13/input.txt"), 0);
-    // }
+    #[test]
+    fn p2() {
+        assert_eq!(mirrors("src/d13/input_test1.txt", 1), 400); // provided test
+        assert_eq!(mirrors("src/d13/input.txt", 1), 29083);
+    }
 }
