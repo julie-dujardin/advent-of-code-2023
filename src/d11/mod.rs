@@ -77,15 +77,15 @@ mod tests {
 
     #[test]
     fn p1() {
-        assert_eq!(expansion("src/d11/input_test1.txt", 1), 374); // provided test
-        assert_eq!(expansion("src/d11/input.txt", 1), 9639160);
+        assert_eq!(expansion("test-data/d11/input_test1.txt", 1), 374); // provided test
+        assert_eq!(expansion("test-data/d11/input.txt", 1), 9639160);
     }
 
     #[test]
     fn p2() {
         // There's an off-by-one error somewhere ig
-        assert_eq!(expansion("src/d11/input_test1.txt", 9), 1030); // provided test
-        assert_eq!(expansion("src/d11/input_test1.txt", 99), 8410); // provided test
-        assert_eq!(expansion("src/d11/input.txt", 999999), 752936133304);
+        assert_eq!(expansion("test-data/d11/input_test1.txt", 9), 1030); // provided test
+        assert_eq!(expansion("test-data/d11/input_test1.txt", 99), 8410); // provided test
+        assert_eq!(expansion("test-data/d11/input.txt", 999999), 752936133304);
     }
 }

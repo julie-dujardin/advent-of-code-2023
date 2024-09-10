@@ -99,14 +99,14 @@ mod tests {
 
     #[test]
     fn p1() {
-        assert_eq!(maze1("src/d8/input_test1.txt"), 2); // provided test
-        assert_eq!(maze1("src/d8/input_test2.txt"), 6); // provided test
-        assert_eq!(maze1("src/d8/input.txt"), 20777);
+        assert_eq!(maze1("test-data/d8/input_test1.txt"), 2); // provided test
+        assert_eq!(maze1("test-data/d8/input_test2.txt"), 6); // provided test
+        assert_eq!(maze1("test-data/d8/input.txt"), 20777);
     }
 
     #[test]
     fn p2() {
-        assert_eq!(maze2("src/d8/input_test3.txt"), 6); // provided test
-        assert_eq!(maze2("src/d8/input.txt"), 13289612809129);
+        assert_eq!(maze2("test-data/d8/input_test3.txt"), 6); // provided test
+        assert_eq!(maze2("test-data/d8/input.txt"), 13289612809129);
     }
 }

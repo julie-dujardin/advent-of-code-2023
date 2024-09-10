@@ -125,15 +125,15 @@ mod tests {
 
     #[test]
     fn p1() {
-        assert_eq!(gears1("src/d3/input_test0.txt"), 4533); // select all
-        assert_eq!(gears1("src/d3/input_test1.txt"), 4361); // provided test
-        assert_eq!(gears1("src/d3/input_test2.txt"), 3859); // numbers at end of line
-        assert_eq!(gears1("src/d3/input.txt"), 537832);
+        assert_eq!(gears1("test-data/d3/input_test0.txt"), 4533); // select all
+        assert_eq!(gears1("test-data/d3/input_test1.txt"), 4361); // provided test
+        assert_eq!(gears1("test-data/d3/input_test2.txt"), 3859); // numbers at end of line
+        assert_eq!(gears1("test-data/d3/input.txt"), 537832);
     }
     #[test]
     fn p2() {
-        assert_eq!(gears2("src/d3/input_test1.txt"), 467835); // provided test
-        assert_eq!(gears2("src/d3/input_test2.txt"), 451490); // numbers at end of line
-        assert_eq!(gears2("src/d3/input.txt"), 81939900);
+        assert_eq!(gears2("test-data/d3/input_test1.txt"), 467835); // provided test
+        assert_eq!(gears2("test-data/d3/input_test2.txt"), 451490); // numbers at end of line
+        assert_eq!(gears2("test-data/d3/input.txt"), 81939900);
     }
 }

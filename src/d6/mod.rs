@@ -49,13 +49,13 @@ mod tests {
 
     #[test]
     fn p1() {
-        assert_eq!(race1("src/d6/input_test1.txt"), 288); // provided test
-        assert_eq!(race1("src/d6/input.txt"), 32076);
+        assert_eq!(race1("test-data/d6/input_test1.txt"), 288); // provided test
+        assert_eq!(race1("test-data/d6/input.txt"), 32076);
     }
 
     #[test]
     fn p2() {
-        assert_eq!(race1("src/d6/input_test2.txt"), 71503); // provided test
-        assert_eq!(race1("src/d6/input2.txt"), 34278221);
+        assert_eq!(race1("test-data/d6/input_test2.txt"), 71503); // provided test
+        assert_eq!(race1("test-data/d6/input2.txt"), 34278221);
     }
 }

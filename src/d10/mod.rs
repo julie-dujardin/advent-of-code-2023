@@ -168,18 +168,18 @@ mod tests {
 
     #[test]
     fn p1() {
-        assert_eq!(maze1("src/d10/input_test1_simple.txt"), 4); // provided test
-        assert_eq!(maze1("src/d10/input_test1.txt"), 4); // provided test
-        assert_eq!(maze1("src/d10/input_test2_simple.txt"), 8); // provided test
-        assert_eq!(maze1("src/d10/input_test2.txt"), 8); // provided test
-        assert_eq!(maze1("src/d10/input.txt"), 6947);
+        assert_eq!(maze1("test-data/d10/input_test1_simple.txt"), 4); // provided test
+        assert_eq!(maze1("test-data/d10/input_test1.txt"), 4); // provided test
+        assert_eq!(maze1("test-data/d10/input_test2_simple.txt"), 8); // provided test
+        assert_eq!(maze1("test-data/d10/input_test2.txt"), 8); // provided test
+        assert_eq!(maze1("test-data/d10/input.txt"), 6947);
     }
 
     #[test]
     fn p2() {
-        assert_eq!(maze2("src/d10/input_test3.txt"), 4); // provided test
-        assert_eq!(maze2("src/d10/input_test4.txt"), 8); // provided test
-        assert_eq!(maze2("src/d10/input_test5.txt"), 10); // provided test
-        assert_eq!(maze2("src/d10/input.txt"), 273);
+        assert_eq!(maze2("test-data/d10/input_test3.txt"), 4); // provided test
+        assert_eq!(maze2("test-data/d10/input_test4.txt"), 8); // provided test
+        assert_eq!(maze2("test-data/d10/input_test5.txt"), 10); // provided test
+        assert_eq!(maze2("test-data/d10/input.txt"), 273);
     }
 }

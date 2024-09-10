@@ -99,13 +99,13 @@ mod tests {
 
     #[test]
     fn p1() {
-        assert_eq!(mirrors("src/d13/input_test1.txt", 0), 405); // provided test
-        assert_eq!(mirrors("src/d13/input.txt", 0), 33975);
+        assert_eq!(mirrors("test-data/d13/input_test1.txt", 0), 405); // provided test
+        assert_eq!(mirrors("test-data/d13/input.txt", 0), 33975);
     }
 
     #[test]
     fn p2() {
-        assert_eq!(mirrors("src/d13/input_test1.txt", 1), 400); // provided test
-        assert_eq!(mirrors("src/d13/input.txt", 1), 29083);
+        assert_eq!(mirrors("test-data/d13/input_test1.txt", 1), 400); // provided test
+        assert_eq!(mirrors("test-data/d13/input.txt", 1), 29083);
     }
 }

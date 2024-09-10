@@ -51,12 +51,12 @@ mod tests {
 
     #[test]
     fn p1() {
-        assert_eq!(cubes1("src/d2/input_test1.txt"), 8);
-        assert_eq!(cubes1("src/d2/input.txt"), 2406);
+        assert_eq!(cubes1("test-data/d2/input_test1.txt"), 8);
+        assert_eq!(cubes1("test-data/d2/input.txt"), 2406);
     }
     #[test]
     fn p2() {
-        assert_eq!(cubes2("src/d2/input_test2.txt"), 2286);
-        assert_eq!(cubes2("src/d2/input.txt"), 78375);
+        assert_eq!(cubes2("test-data/d2/input_test2.txt"), 2286);
+        assert_eq!(cubes2("test-data/d2/input.txt"), 78375);
     }
 }

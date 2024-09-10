@@ -149,14 +149,14 @@ mod tests {
 
     #[test]
     fn p1() {
-        assert_eq!(camels1("src/d7/input_test1.txt"), 6440); // provided test
-        assert_eq!(camels1("src/d7/input.txt"), 247961593);
+        assert_eq!(camels1("test-data/d7/input_test1.txt"), 6440); // provided test
+        assert_eq!(camels1("test-data/d7/input.txt"), 247961593);
     }
 
     #[test]
     fn p2() {
-        assert_eq!(camels2("src/d7/input_test1.txt"), 5905); // provided test
-        assert_eq!(camels2("src/d7/input.txt"), 248750699);
+        assert_eq!(camels2("test-data/d7/input_test1.txt"), 5905); // provided test
+        assert_eq!(camels2("test-data/d7/input.txt"), 248750699);
         // 249091568 too high
         // 249041341 too high
     }

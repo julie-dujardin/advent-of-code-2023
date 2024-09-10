@@ -23,13 +23,13 @@ mod tests {
 
     // #[test]
     // fn p1() {
-    //     assert_eq!(spring1("src/d12/input_test1.txt"), 21); // provided test
-    //     assert_eq!(spring1("src/d12/input.txt"), 0);
+    //     assert_eq!(spring1("test-data/d12/input_test1.txt"), 21); // provided test
+    //     assert_eq!(spring1("test-data/d12/input.txt"), 0);
     // }
 
     // #[test]
     // fn p2() {
-    //     assert_eq!(spring2("src/d12/input_test1.txt"), 0); // provided test
-    //     assert_eq!(spring2("src/d12/input.txt"), 0);
+    //     assert_eq!(spring2("test-data/d12/input_test1.txt"), 0); // provided test
+    //     assert_eq!(spring2("test-data/d12/input.txt"), 0);
     // }
 }

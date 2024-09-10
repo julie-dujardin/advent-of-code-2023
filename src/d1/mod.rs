@@ -90,12 +90,12 @@ mod tests {
 
     #[test]
     fn p1() {
-        assert_eq!(trebuchet1("src/d1/input_test1.txt"), 142);
-        assert_eq!(trebuchet1("src/d1/input.txt"), 55123);
+        assert_eq!(trebuchet1("test-data/d1/input_test1.txt"), 142);
+        assert_eq!(trebuchet1("test-data/d1/input.txt"), 55123);
     }
     #[test]
     fn p2() {
-        assert_eq!(trebuchet2("src/d1/input_test2.txt"), 281);
-        assert_eq!(trebuchet2("src/d1/input.txt"), 55260);
+        assert_eq!(trebuchet2("test-data/d1/input_test2.txt"), 281);
+        assert_eq!(trebuchet2("test-data/d1/input.txt"), 55260);
     }
 }

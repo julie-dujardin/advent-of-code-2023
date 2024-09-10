@@ -74,13 +74,13 @@ mod tests {
 
     #[test]
     fn p1() {
-        assert_eq!(scratchcards1("src/d4/input_test1.txt", 7), 13); // provided test
-        assert_eq!(scratchcards1("src/d4/input.txt", 9), 27454);
+        assert_eq!(scratchcards1("test-data/d4/input_test1.txt", 7), 13); // provided test
+        assert_eq!(scratchcards1("test-data/d4/input.txt", 9), 27454);
     }
 
     #[test]
     fn p2() {
-        assert_eq!(scratchcards2("src/d4/input_test1.txt", 7), 30); // provided test
-        assert_eq!(scratchcards2("src/d4/input.txt", 9), 6857330);
+        assert_eq!(scratchcards2("test-data/d4/input_test1.txt", 7), 30); // provided test
+        assert_eq!(scratchcards2("test-data/d4/input.txt", 9), 6857330);
     }
 }

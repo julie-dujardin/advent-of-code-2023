@@ -131,13 +131,13 @@ mod tests {
 
     #[test]
     fn p1() {
-        assert_eq!(seed1("src/d5/input_test1.txt"), 35); // provided test
-        assert_eq!(seed1("src/d5/input.txt"), 175622908);
+        assert_eq!(seed1("test-data/d5/input_test1.txt"), 35); // provided test
+        assert_eq!(seed1("test-data/d5/input.txt"), 175622908);
     }
 
     #[test]
     fn p2() {
-        assert_eq!(seed2("src/d5/input_test1.txt"), 46); // provided test
-        assert_eq!(seed2("src/d5/input.txt"), 5200543);
+        assert_eq!(seed2("test-data/d5/input_test1.txt"), 46); // provided test
+        assert_eq!(seed2("test-data/d5/input.txt"), 5200543);
     }
 }
