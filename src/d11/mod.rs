@@ -16,8 +16,8 @@ fn get_galaxies_positions(map: Vec<Vec<char>>, expansion: usize) -> Vec<(isize, 
     // Get a list of all empty columns, which should be expanded
     for x in 0..map.first().unwrap().len() {
         let mut found_galaxy = false;
-        for y in 0..map.len() {
-            if map[y][x] == '#' {
+        for line in &map {
+            if line[x] == '#' {
                 found_galaxy = true;
                 break;
             }
@@ -53,19 +53,19 @@ fn get_galaxies_positions(map: Vec<Vec<char>>, expansion: usize) -> Vec<(isize, 
     galaxies
 }
 
-fn sum_distances(galaxies: Vec<(isize, isize)>) -> isize {
+fn sum_distances(galaxies: Vec<(isize, isize)>) -> usize {
     let mut distance_sum = 0;
     for (i, galaxy) in galaxies.iter().enumerate() {
-        for target_galaxy_idx in i + 1..galaxies.len() {
-            let target_galaxy = galaxies[target_galaxy_idx];
+        for target_galaxy in galaxies.iter().skip(i + 1) {
             distance_sum += (target_galaxy.0 - galaxy.0).abs() + (target_galaxy.1 - galaxy.1).abs();
         }
     }
 
-    distance_sum
+    println!("expansion:{}", distance_sum);
+    distance_sum as usize
 }
 
-fn expansion(file_path: &str, expansion: usize) -> isize {
+pub fn expansion(file_path: &str, expansion: usize) -> usize {
     let map = parse_file(file_path);
     let galaxies = get_galaxies_positions(map, expansion);
     sum_distances(galaxies)
@@ -74,18 +74,36 @@ fn expansion(file_path: &str, expansion: usize) -> isize {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::load_output::load_results;
 
     #[test]
     fn p1() {
-        assert_eq!(expansion("test-data/d11/input_test1.txt", 1), 374); // provided test
-        assert_eq!(expansion("test-data/d11/input.txt", 1), 9639160);
+        let (expected_p1, _) = load_results("d11").unwrap();
+        assert_eq!(
+            expansion("test-data/d11/input_test1.txt", 1),
+            expected_p1["input_test1"]
+        );
+        assert_eq!(
+            expansion("test-data/d11/input.txt", 1),
+            expected_p1["input"]
+        );
     }
 
     #[test]
     fn p2() {
+        let (_, expected_p2) = load_results("d11").unwrap();
         // There's an off-by-one error somewhere ig
-        assert_eq!(expansion("test-data/d11/input_test1.txt", 9), 1030); // provided test
-        assert_eq!(expansion("test-data/d11/input_test1.txt", 99), 8410); // provided test
-        assert_eq!(expansion("test-data/d11/input.txt", 999999), 752936133304);
+        assert_eq!(
+            expansion("test-data/d11/input_test1.txt", 9),
+            expected_p2["input_test1"]
+        );
+        assert_eq!(
+            expansion("test-data/d11/input_test1.txt", 99),
+            expected_p2["input_test1_2"]
+        );
+        assert_eq!(
+            expansion("test-data/d11/input.txt", 999999),
+            expected_p2["input"]
+        );
     }
 }

@@ -18,7 +18,7 @@ fn line_min_counts(line_split: Vec<&str>) -> HashMap<&str, i32> {
     maximums
 }
 
-fn cubes1(file_path: &str) -> i32 {
+pub fn cubes1(file_path: &str) -> usize {
     let mut sum = 0;
     for line in fs::read_to_string(file_path).unwrap().lines() {
         let line_split: Vec<&str> = line.split(": ").collect();
@@ -30,10 +30,10 @@ fn cubes1(file_path: &str) -> i32 {
         }
     }
     println!("The sum of possible IDs is {sum}");
-    sum
+    sum as usize
 }
 
-fn cubes2(file_path: &str) -> i32 {
+pub fn cubes2(file_path: &str) -> usize {
     let mut sum = 0;
     for line in fs::read_to_string(file_path).unwrap().lines() {
         let line_split: Vec<&str> = line.split(": ").collect();
@@ -42,21 +42,30 @@ fn cubes2(file_path: &str) -> i32 {
         sum += maximums["red"] * maximums["green"] * maximums["blue"]
     }
     println!("The sum of powers is {sum}");
-    sum
+    sum as usize
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::load_output::load_results;
 
     #[test]
     fn p1() {
-        assert_eq!(cubes1("test-data/d2/input_test1.txt"), 8);
-        assert_eq!(cubes1("test-data/d2/input.txt"), 2406);
+        let (expected_p1, _) = load_results("d2").unwrap();
+        assert_eq!(
+            cubes1("test-data/d2/input_test1.txt"),
+            expected_p1["input_test1"]
+        );
+        assert_eq!(cubes1("test-data/d2/input.txt"), expected_p1["input"]);
     }
     #[test]
     fn p2() {
-        assert_eq!(cubes2("test-data/d2/input_test2.txt"), 2286);
-        assert_eq!(cubes2("test-data/d2/input.txt"), 78375);
+        let (_, expected_p2) = load_results("d2").unwrap();
+        assert_eq!(
+            cubes2("test-data/d2/input_test2.txt"),
+            expected_p2["input_test2"]
+        );
+        assert_eq!(cubes2("test-data/d2/input.txt"), expected_p2["input"]);
     }
 }

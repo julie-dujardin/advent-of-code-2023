@@ -20,7 +20,7 @@ fn parse_file(file_path: &str) -> Vec<(isize, isize)> {
     races
 }
 
-fn race1(file_path: &str) -> i32 {
+pub fn race(file_path: &str) -> usize {
     let races = parse_file(file_path);
 
     let mut total = 1;
@@ -40,22 +40,31 @@ fn race1(file_path: &str) -> i32 {
     }
 
     println!("The total is {total}");
-    total
+    total as usize
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::load_output::load_results;
 
     #[test]
     fn p1() {
-        assert_eq!(race1("test-data/d6/input_test1.txt"), 288); // provided test
-        assert_eq!(race1("test-data/d6/input.txt"), 32076);
+        let (expected_p1, _) = load_results("d6").unwrap();
+        assert_eq!(
+            race("test-data/d6/input_test1.txt"),
+            expected_p1["input_test1"]
+        );
+        assert_eq!(race("test-data/d6/input.txt"), expected_p1["input"]);
     }
 
     #[test]
     fn p2() {
-        assert_eq!(race1("test-data/d6/input_test2.txt"), 71503); // provided test
-        assert_eq!(race1("test-data/d6/input2.txt"), 34278221);
+        let (_, expected_p2) = load_results("d6").unwrap();
+        assert_eq!(
+            race("test-data/d6/input_test2.txt"),
+            expected_p2["input_test2"]
+        );
+        assert_eq!(race("test-data/d6/input2.txt"), expected_p2["input2"]);
     }
 }

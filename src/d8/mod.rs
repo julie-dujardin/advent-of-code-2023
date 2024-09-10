@@ -34,7 +34,7 @@ fn parse_file(file_path: &str) -> (String, HashMap<String, (String, String)>) {
     (instructions, nodes)
 }
 
-fn maze1(file_path: &str) -> usize {
+pub fn maze1(file_path: &str) -> usize {
     let (instructions, nodes) = parse_file(file_path);
 
     let mut curr_node: &String = &String::from("AAA");
@@ -82,7 +82,7 @@ fn solve_path2(
     steps
 }
 
-fn maze2(file_path: &str) -> usize {
+pub fn maze2(file_path: &str) -> usize {
     let (instructions, nodes) = parse_file(file_path);
 
     let mut steps: Vec<usize> = Vec::new();
@@ -96,17 +96,29 @@ fn maze2(file_path: &str) -> usize {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::load_output::load_results;
 
     #[test]
     fn p1() {
-        assert_eq!(maze1("test-data/d8/input_test1.txt"), 2); // provided test
-        assert_eq!(maze1("test-data/d8/input_test2.txt"), 6); // provided test
-        assert_eq!(maze1("test-data/d8/input.txt"), 20777);
+        let (expected_p1, _) = load_results("d8").unwrap();
+        assert_eq!(
+            maze1("test-data/d8/input_test1.txt"),
+            expected_p1["input_test1"]
+        );
+        assert_eq!(
+            maze1("test-data/d8/input_test2.txt"),
+            expected_p1["input_test2"]
+        );
+        assert_eq!(maze1("test-data/d8/input.txt"), expected_p1["input"]);
     }
 
     #[test]
     fn p2() {
-        assert_eq!(maze2("test-data/d8/input_test3.txt"), 6); // provided test
-        assert_eq!(maze2("test-data/d8/input.txt"), 13289612809129);
+        let (_, expected_p2) = load_results("d8").unwrap();
+        assert_eq!(
+            maze2("test-data/d8/input_test3.txt"),
+            expected_p2["input_test3"]
+        );
+        assert_eq!(maze2("test-data/d8/input.txt"), expected_p2["input"]);
     }
 }

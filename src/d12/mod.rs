@@ -9,27 +9,30 @@ fn parse_file(file_path: &str) -> Vec<Vec<char>> {
     map
 }
 
-fn spring1(file_path: &str) -> usize {
+pub fn spring1(file_path: &str) -> usize {
     0
 }
 
-fn spring2(file_path: &str) -> usize {
+pub fn spring2(file_path: &str) -> usize {
     0
 }
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    
+    
 
     // #[test]
     // fn p1() {
-    //     assert_eq!(spring1("test-data/d12/input_test1.txt"), 21); // provided test
-    //     assert_eq!(spring1("test-data/d12/input.txt"), 0);
+    // let (expected_p1, _) = load_results("d12").unwrap();
+    // assert_eq!(spring1("test-data/d12/input_test1.txt"), expected_p1["input_test1"]);
+    // assert_eq!(spring1("test-data/d12/input.txt"), expected_p1["input"]);
     // }
 
     // #[test]
     // fn p2() {
-    //     assert_eq!(spring2("test-data/d12/input_test1.txt"), 0); // provided test
-    //     assert_eq!(spring2("test-data/d12/input.txt"), 0);
+    // let (_, expected_p2) = load_results("d12").unwrap();
+    // assert_eq!(spring2("test-data/d12/input_test1.txt"), expected_p2["input_test1"]);
+    // assert_eq!(spring2("test-data/d12/input.txt"), expected_p2["input"]);
     // }
 }

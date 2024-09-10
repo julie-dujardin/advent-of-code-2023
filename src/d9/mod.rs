@@ -33,7 +33,7 @@ fn series_diffs(measurements: &Vec<isize>) -> Vec<Vec<isize>> {
     measurements_diffs
 }
 
-fn mirage1(file_path: &str) -> isize {
+pub fn mirage1(file_path: &str) -> usize {
     let series = parse_file(file_path);
     let mut sum = 0;
 
@@ -50,10 +50,10 @@ fn mirage1(file_path: &str) -> isize {
         sum += guess_diff + measurements.last().unwrap()
     }
 
-    sum
+    sum as usize
 }
 
-fn mirage2000(file_path: &str) -> isize {
+pub fn mirage2000(file_path: &str) -> usize {
     let series = parse_file(file_path);
     let mut sum = 0;
 
@@ -70,12 +70,13 @@ fn mirage2000(file_path: &str) -> isize {
         sum += measurements.first().unwrap() - guess_diff
     }
 
-    sum
+    sum as usize
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::load_output::load_results;
 
     #[test]
     fn test_series_diff() {
@@ -89,13 +90,21 @@ mod tests {
 
     #[test]
     fn p1() {
-        assert_eq!(mirage1("test-data/d9/input_test1.txt"), 114); // provided test
-        assert_eq!(mirage1("test-data/d9/input.txt"), 1696140818);
+        let (expected_p1, _) = load_results("d9").unwrap();
+        assert_eq!(
+            mirage1("test-data/d9/input_test1.txt"),
+            expected_p1["input_test1"]
+        );
+        assert_eq!(mirage1("test-data/d9/input.txt"), expected_p1["input"]);
     }
 
     #[test]
     fn p2() {
-        assert_eq!(mirage2000("test-data/d9/input_test1.txt"), 2); // provided test
-        assert_eq!(mirage2000("test-data/d9/input.txt"), 1152);
+        let (_, expected_p2) = load_results("d9").unwrap();
+        assert_eq!(
+            mirage2000("test-data/d9/input_test1.txt"),
+            expected_p2["input_test1"]
+        );
+        assert_eq!(mirage2000("test-data/d9/input.txt"), expected_p2["input"]);
     }
 }

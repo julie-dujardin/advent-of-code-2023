@@ -1,7 +1,7 @@
 use std::collections::{HashMap, HashSet};
 use std::fs;
 
-fn numbers_str_to_hashset(s: &str) -> HashSet<i32> {
+fn numbers_str_to_hashset(s: &str) -> HashSet<usize> {
     let mut nums = HashSet::new();
     for number_s in s.split(' ').filter(|&x| !x.is_empty()) {
         nums.insert(number_s.parse().unwrap());
@@ -9,7 +9,7 @@ fn numbers_str_to_hashset(s: &str) -> HashSet<i32> {
     nums
 }
 
-fn scratchcards1(file_path: &str, offset: usize) -> i32 {
+pub fn scratchcards1(file_path: &str, offset: usize) -> usize {
     let mut sum = 0;
 
     for line in fs::read_to_string(file_path).unwrap().lines() {
@@ -20,7 +20,7 @@ fn scratchcards1(file_path: &str, offset: usize) -> i32 {
 
         let card_win_count = have_nums.intersection(&winning_nums).count();
         if card_win_count > 0 {
-            sum += 2_i32.pow((card_win_count - 1) as u32);
+            sum += 2_usize.pow((card_win_count - 1) as u32);
         }
     }
 
@@ -28,12 +28,12 @@ fn scratchcards1(file_path: &str, offset: usize) -> i32 {
     sum
 }
 
-fn scratchcards2(file_path: &str, offset: usize) -> i32 {
+pub fn scratchcards2(file_path: &str, offset: usize) -> usize {
     let mut sum = 0;
-    let mut copy_counts: HashMap<usize, i32> = HashMap::new();
+    let mut copy_counts: HashMap<usize, usize> = HashMap::new();
 
     for (i, line) in fs::read_to_string(file_path).unwrap().lines().enumerate() {
-        let multiplier = 1 + if copy_counts.get(&i).is_some() {
+        let multiplier = 1 + if copy_counts.contains_key(&i) {
             copy_counts.get(&i).unwrap()
         } else {
             &0
@@ -63,6 +63,7 @@ fn scratchcards2(file_path: &str, offset: usize) -> i32 {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::load_output::load_results;
 
     #[test]
     fn n2vec() {
@@ -74,13 +75,27 @@ mod tests {
 
     #[test]
     fn p1() {
-        assert_eq!(scratchcards1("test-data/d4/input_test1.txt", 7), 13); // provided test
-        assert_eq!(scratchcards1("test-data/d4/input.txt", 9), 27454);
+        let (expected_p1, _) = load_results("d4").unwrap();
+        assert_eq!(
+            scratchcards1("test-data/d4/input_test1.txt", 7),
+            expected_p1["input_test1"]
+        );
+        assert_eq!(
+            scratchcards1("test-data/d4/input.txt", 9),
+            expected_p1["input"]
+        );
     }
 
     #[test]
     fn p2() {
-        assert_eq!(scratchcards2("test-data/d4/input_test1.txt", 7), 30); // provided test
-        assert_eq!(scratchcards2("test-data/d4/input.txt", 9), 6857330);
+        let (_, expected_p2) = load_results("d4").unwrap();
+        assert_eq!(
+            scratchcards2("test-data/d4/input_test1.txt", 7),
+            expected_p2["input_test1"]
+        );
+        assert_eq!(
+            scratchcards2("test-data/d4/input.txt", 9),
+            expected_p2["input"]
+        );
     }
 }

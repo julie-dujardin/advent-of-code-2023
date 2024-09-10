@@ -66,7 +66,7 @@ fn get_first_move(maze: &Maze) -> ((usize, usize), bool, (i32, i32)) {
     panic!("Didn't find a first move!!!")
 }
 
-fn maze1(file_path: &str) -> isize {
+pub fn maze1(file_path: &str) -> usize {
     let maze = parse_file(file_path);
     let (mut curr_pos, mut reverse, _) = get_first_move(&maze);
     let mut curr_tile = maze.get(curr_pos.0, curr_pos.1);
@@ -139,7 +139,7 @@ fn clean_maze(maze: Maze) -> Maze {
     }
 }
 
-fn maze2(file_path: &str) -> isize {
+pub fn maze2(file_path: &str) -> usize {
     let maze = parse_file(file_path);
     let maze_clean = clean_maze(maze);
 
@@ -165,21 +165,45 @@ fn maze2(file_path: &str) -> isize {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::load_output::load_results;
 
     #[test]
     fn p1() {
-        assert_eq!(maze1("test-data/d10/input_test1_simple.txt"), 4); // provided test
-        assert_eq!(maze1("test-data/d10/input_test1.txt"), 4); // provided test
-        assert_eq!(maze1("test-data/d10/input_test2_simple.txt"), 8); // provided test
-        assert_eq!(maze1("test-data/d10/input_test2.txt"), 8); // provided test
-        assert_eq!(maze1("test-data/d10/input.txt"), 6947);
+        let (expected_p1, _) = load_results("d10").unwrap();
+        assert_eq!(
+            maze1("test-data/d10/input_test1_simple.txt"),
+            expected_p1["input_test1_simple"]
+        );
+        assert_eq!(
+            maze1("test-data/d10/input_test1.txt"),
+            expected_p1["input_test1"]
+        );
+        assert_eq!(
+            maze1("test-data/d10/input_test2_simple.txt"),
+            expected_p1["input_test2_simple"]
+        );
+        assert_eq!(
+            maze1("test-data/d10/input_test2.txt"),
+            expected_p1["input_test2"]
+        );
+        assert_eq!(maze1("test-data/d10/input.txt"), expected_p1["input"]);
     }
 
     #[test]
     fn p2() {
-        assert_eq!(maze2("test-data/d10/input_test3.txt"), 4); // provided test
-        assert_eq!(maze2("test-data/d10/input_test4.txt"), 8); // provided test
-        assert_eq!(maze2("test-data/d10/input_test5.txt"), 10); // provided test
-        assert_eq!(maze2("test-data/d10/input.txt"), 273);
+        let (_, expected_p2) = load_results("d10").unwrap();
+        assert_eq!(
+            maze2("test-data/d10/input_test3.txt"),
+            expected_p2["input_test3"]
+        );
+        assert_eq!(
+            maze2("test-data/d10/input_test4.txt"),
+            expected_p2["input_test4"]
+        );
+        assert_eq!(
+            maze2("test-data/d10/input_test5.txt"),
+            expected_p2["input_test5"]
+        );
+        assert_eq!(maze2("test-data/d10/input.txt"), expected_p2["input"]);
     }
 }

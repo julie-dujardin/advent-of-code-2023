@@ -81,7 +81,7 @@ fn get_line_count_before_mirror(
     0
 }
 
-fn mirrors(file_path: &str, acceptable_diffs: usize) -> usize {
+pub fn mirrors(file_path: &str, acceptable_diffs: usize) -> usize {
     let maps = parse_file(file_path);
     let mut sum = 0;
 
@@ -96,16 +96,25 @@ fn mirrors(file_path: &str, acceptable_diffs: usize) -> usize {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::load_output::load_results;
 
     #[test]
     fn p1() {
-        assert_eq!(mirrors("test-data/d13/input_test1.txt", 0), 405); // provided test
-        assert_eq!(mirrors("test-data/d13/input.txt", 0), 33975);
+        let (expected_p1, _) = load_results("d13").unwrap();
+        assert_eq!(
+            mirrors("test-data/d13/input_test1.txt", 0),
+            expected_p1["input_test1"]
+        );
+        assert_eq!(mirrors("test-data/d13/input.txt", 0), expected_p1["input"]);
     }
 
     #[test]
     fn p2() {
-        assert_eq!(mirrors("test-data/d13/input_test1.txt", 1), 400); // provided test
-        assert_eq!(mirrors("test-data/d13/input.txt", 1), 29083);
+        let (_, expected_p2) = load_results("d13").unwrap();
+        assert_eq!(
+            mirrors("test-data/d13/input_test1.txt", 1),
+            expected_p2["input_test1"]
+        );
+        assert_eq!(mirrors("test-data/d13/input.txt", 1), expected_p2["input"]);
     }
 }

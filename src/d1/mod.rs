@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::fs;
 
-fn trebuchet1(file_path: &str) -> i32 {
+pub fn trebuchet1(file_path: &str) -> usize {
     let mut sum = 0;
     // TODO line buffering
     // TODO line multithreading
@@ -13,7 +13,7 @@ fn trebuchet1(file_path: &str) -> i32 {
         sum += number.parse::<i32>().unwrap()
     }
     println!("The calibration value is {sum}");
-    sum
+    sum as usize
 }
 
 fn find_text_digit(line: &str, rev: bool) -> (usize, char) {
@@ -45,7 +45,7 @@ fn find_text_digit(line: &str, rev: bool) -> (usize, char) {
     (li, ln)
 }
 
-fn trebuchet2(file_path: &str) -> i32 {
+pub fn trebuchet2(file_path: &str) -> usize {
     let mut sum = 0;
     for line in fs::read_to_string(file_path).unwrap().lines() {
         let mut number = String::new();
@@ -81,21 +81,30 @@ fn trebuchet2(file_path: &str) -> i32 {
         sum += number.parse::<i32>().unwrap()
     }
     println!("The corrected calibration value is {sum}");
-    sum
+    sum as usize
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::load_output::load_results;
 
     #[test]
     fn p1() {
-        assert_eq!(trebuchet1("test-data/d1/input_test1.txt"), 142);
-        assert_eq!(trebuchet1("test-data/d1/input.txt"), 55123);
+        let (expected_p1, _) = load_results("d1").unwrap();
+        assert_eq!(
+            trebuchet1("test-data/d1/input_test1.txt"),
+            expected_p1["input_test1"]
+        );
+        assert_eq!(trebuchet1("test-data/d1/input.txt"), expected_p1["input"]);
     }
     #[test]
     fn p2() {
-        assert_eq!(trebuchet2("test-data/d1/input_test2.txt"), 281);
-        assert_eq!(trebuchet2("test-data/d1/input.txt"), 55260);
+        let (_, expected_p2) = load_results("d1").unwrap();
+        assert_eq!(
+            trebuchet2("test-data/d1/input_test2.txt"),
+            expected_p2["input_test2"]
+        );
+        assert_eq!(trebuchet2("test-data/d1/input.txt"), expected_p2["input"]);
     }
 }
