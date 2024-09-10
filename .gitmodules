@@ -1,0 +1,3 @@
+[submodule "test-data"]
+	path = test-data
+	url = git@github.com:julie-dujardin/advent-of-code-2023-test-data.git
