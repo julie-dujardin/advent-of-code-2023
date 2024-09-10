@@ -14,7 +14,7 @@ fn parse_file(file_path: &str) -> Vec<Vec<Vec<char>>> {
     maps
 }
 
-fn get_pos(map: &Vec<Vec<char>>, horizontal: bool, i: usize, j: usize) -> char {
+fn get_pos(map: &[Vec<char>], horizontal: bool, i: usize, j: usize) -> char {
     if horizontal {
         map[i][j]
     } else {
@@ -23,7 +23,7 @@ fn get_pos(map: &Vec<Vec<char>>, horizontal: bool, i: usize, j: usize) -> char {
 }
 
 fn get_diff_count_for_lines(
-    map: &Vec<Vec<char>>,
+    map: &[Vec<char>],
     horizontal: bool,
     i1: usize,
     i2: usize,
@@ -47,7 +47,7 @@ fn get_diff_count_for_lines(
 }
 
 fn get_line_count_before_mirror(
-    map: &Vec<Vec<char>>,
+    map: &[Vec<char>],
     horizontal: bool,
     wanted_diffs: usize,
 ) -> usize {

@@ -58,7 +58,7 @@ pub fn maze1(file_path: &str) -> usize {
 }
 
 fn solve_path2(
-    instructions: &String,
+    instructions: &str,
     nodes: &HashMap<String, (String, String)>,
     start_node: &String,
 ) -> usize {

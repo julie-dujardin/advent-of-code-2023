@@ -20,7 +20,7 @@ fn parse_file(file_path: &str) -> Vec<(String, usize)> {
     hands
 }
 
-fn get_hand_type1(hand: &String) -> usize {
+fn get_hand_type1(hand: &str) -> usize {
     let mut card_counts = HashMap::new();
     for card in hand.chars() {
         card_counts.entry(card).and_modify(|x| *x += 1).or_insert(1);
@@ -51,7 +51,7 @@ fn get_hand_type1(hand: &String) -> usize {
     10 // High card
 }
 
-fn evaluate_cards(hand: &String, card_order: [char; 13]) -> f64 {
+fn evaluate_cards(hand: &str, card_order: [char; 13]) -> f64 {
     let mut tie_break = 0.;
     for (i, char) in hand.chars().enumerate() {
         tie_break += card_order.iter().position(|&r| r == char).unwrap() as f64
@@ -60,7 +60,7 @@ fn evaluate_cards(hand: &String, card_order: [char; 13]) -> f64 {
     tie_break
 }
 
-fn evaluate_hand1(hand: &String) -> f64 {
+fn evaluate_hand1(hand: &str) -> f64 {
     get_hand_type1(hand) as f64 + evaluate_cards(hand, CARDS_SORTED1)
 }
 
@@ -86,7 +86,7 @@ pub fn camels1(file_path: &str) -> usize {
     sum_hands(hands)
 }
 
-fn get_hand_type2(hand: &String) -> usize {
+fn get_hand_type2(hand: &str) -> usize {
     let mut card_counts = HashMap::new();
     for card in hand.chars() {
         card_counts.entry(card).and_modify(|x| *x += 1).or_insert(1);
@@ -121,7 +121,7 @@ fn get_hand_type2(hand: &String) -> usize {
     10 // High card
 }
 
-fn evaluate_hand2(hand: &String) -> f64 {
+fn evaluate_hand2(hand: &str) -> f64 {
     get_hand_type2(hand) as f64 + evaluate_cards(hand, CARDS_SORTED2)
 }
 

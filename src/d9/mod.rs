@@ -14,7 +14,7 @@ fn parse_file(file_path: &str) -> Vec<Vec<isize>> {
     series
 }
 
-fn series_diff(measurements: &Vec<isize>) -> Vec<isize> {
+fn series_diff(measurements: &[isize]) -> Vec<isize> {
     let mut diffs = Vec::new();
 
     for i in 0..measurements.len() - 1 {
@@ -24,7 +24,7 @@ fn series_diff(measurements: &Vec<isize>) -> Vec<isize> {
     diffs
 }
 
-fn series_diffs(measurements: &Vec<isize>) -> Vec<Vec<isize>> {
+fn series_diffs(measurements: &[isize]) -> Vec<Vec<isize>> {
     let mut measurements_diffs = vec![series_diff(measurements)];
 
     while !measurements_diffs.last().unwrap().iter().all(|&x| x == 0) {
@@ -80,10 +80,10 @@ mod tests {
 
     #[test]
     fn test_series_diff() {
-        assert_eq!(series_diff(&vec![0, 3, 6, 9, 12, 15]), vec![3, 3, 3, 3, 3]);
-        assert_eq!(series_diff(&vec![3, 3, 3, 3, 3]), vec![0, 0, 0, 0]);
+        assert_eq!(series_diff(&[0, 3, 6, 9, 12, 15]), vec![3, 3, 3, 3, 3]);
+        assert_eq!(series_diff(&[3, 3, 3, 3, 3]), vec![0, 0, 0, 0]);
         assert_eq!(
-            series_diff(&vec![10, 13, 16, 21, 30, 45, 68]),
+            series_diff(&[10, 13, 16, 21, 30, 45, 68]),
             vec![3, 3, 5, 9, 15, 23]
         );
     }
