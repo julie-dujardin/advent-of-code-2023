@@ -19,8 +19,6 @@ pub fn spring2(file_path: &str) -> usize {
 
 #[cfg(test)]
 mod tests {
-    
-    
 
     // #[test]
     // fn p1() {

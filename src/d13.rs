@@ -46,11 +46,7 @@ fn get_diff_count_for_lines(
     diff_count
 }
 
-fn get_line_count_before_mirror(
-    map: &[Vec<char>],
-    horizontal: bool,
-    wanted_diffs: usize,
-) -> usize {
+fn get_line_count_before_mirror(map: &[Vec<char>], horizontal: bool, wanted_diffs: usize) -> usize {
     let l1_max = if horizontal {
         map.len()
     } else {
