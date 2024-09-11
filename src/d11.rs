@@ -78,7 +78,7 @@ mod tests {
 
     #[test]
     fn p1() {
-        let (expected_p1, _) = load_results("d11").unwrap();
+        let expected_p1 = load_results("d11", "p1");
         assert_eq!(
             expansion("test-data/d11/input_test1.txt", 1),
             expected_p1["input_test1"]
@@ -91,7 +91,7 @@ mod tests {
 
     #[test]
     fn p2() {
-        let (_, expected_p2) = load_results("d11").unwrap();
+        let expected_p2 = load_results("d11", "p2");
         // There's an off-by-one error somewhere ig
         assert_eq!(
             expansion("test-data/d11/input_test1.txt", 9),

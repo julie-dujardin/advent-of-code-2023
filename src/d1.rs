@@ -91,7 +91,7 @@ mod tests {
 
     #[test]
     fn p1() {
-        let (expected_p1, _) = load_results("d1").unwrap();
+        let expected_p1 = load_results("d1", "p1");
         assert_eq!(
             trebuchet1("test-data/d1/input_test1.txt"),
             expected_p1["input_test1"]
@@ -100,7 +100,7 @@ mod tests {
     }
     #[test]
     fn p2() {
-        let (_, expected_p2) = load_results("d1").unwrap();
+        let expected_p2 = load_results("d1", "p2");
         assert_eq!(
             trebuchet2("test-data/d1/input_test2.txt"),
             expected_p2["input_test2"]

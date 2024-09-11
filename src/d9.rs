@@ -90,7 +90,7 @@ mod tests {
 
     #[test]
     fn p1() {
-        let (expected_p1, _) = load_results("d9").unwrap();
+        let expected_p1 = load_results("d9", "p1");
         assert_eq!(
             mirage1("test-data/d9/input_test1.txt"),
             expected_p1["input_test1"]
@@ -100,7 +100,7 @@ mod tests {
 
     #[test]
     fn p2() {
-        let (_, expected_p2) = load_results("d9").unwrap();
+        let expected_p2 = load_results("d9", "p2");
         assert_eq!(
             mirage2000("test-data/d9/input_test1.txt"),
             expected_p2["input_test1"]

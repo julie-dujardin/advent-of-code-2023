@@ -126,7 +126,7 @@ mod tests {
 
     #[test]
     fn p1() {
-        let (expected_p1, _) = load_results("d3").unwrap();
+        let expected_p1 = load_results("d3", "p1");
         assert_eq!(
             gears1("test-data/d3/input_test0.txt"),
             expected_p1["input_test0"]
@@ -143,7 +143,7 @@ mod tests {
     }
     #[test]
     fn p2() {
-        let (_, expected_p2) = load_results("d3").unwrap();
+        let expected_p2 = load_results("d3", "p2");
         assert_eq!(
             gears2("test-data/d3/input_test1.txt"),
             expected_p2["input_test1"]

@@ -52,7 +52,7 @@ mod tests {
 
     #[test]
     fn p1() {
-        let (expected_p1, _) = load_results("d2").unwrap();
+        let expected_p1 = load_results("d2", "p1");
         assert_eq!(
             cubes1("test-data/d2/input_test1.txt"),
             expected_p1["input_test1"]
@@ -61,7 +61,7 @@ mod tests {
     }
     #[test]
     fn p2() {
-        let (_, expected_p2) = load_results("d2").unwrap();
+        let expected_p2 = load_results("d2", "p2");
         assert_eq!(
             cubes2("test-data/d2/input_test2.txt"),
             expected_p2["input_test2"]

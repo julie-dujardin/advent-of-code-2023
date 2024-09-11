@@ -150,7 +150,7 @@ mod tests {
 
     #[test]
     fn p1() {
-        let (expected_p1, _) = load_results("d7").unwrap();
+        let expected_p1 = load_results("d7", "p1");
         assert_eq!(
             camels1("test-data/d7/input_test1.txt"),
             expected_p1["input_test1"]
@@ -160,7 +160,7 @@ mod tests {
 
     #[test]
     fn p2() {
-        let (_, expected_p2) = load_results("d7").unwrap();
+        let expected_p2 = load_results("d7", "p2");
         assert_eq!(
             camels2("test-data/d7/input_test1.txt"),
             expected_p2["input_test1"]

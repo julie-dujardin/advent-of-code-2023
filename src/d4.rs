@@ -75,7 +75,7 @@ mod tests {
 
     #[test]
     fn p1() {
-        let (expected_p1, _) = load_results("d4").unwrap();
+        let expected_p1 = load_results("d4", "p1");
         assert_eq!(
             scratchcards1("test-data/d4/input_test1.txt", 7),
             expected_p1["input_test1"]
@@ -88,7 +88,7 @@ mod tests {
 
     #[test]
     fn p2() {
-        let (_, expected_p2) = load_results("d4").unwrap();
+        let expected_p2 = load_results("d4", "p2");
         assert_eq!(
             scratchcards2("test-data/d4/input_test1.txt", 7),
             expected_p2["input_test1"]

@@ -169,7 +169,7 @@ mod tests {
 
     #[test]
     fn p1() {
-        let (expected_p1, _) = load_results("d10").unwrap();
+        let expected_p1 = load_results("d10", "p1");
         assert_eq!(
             maze1("test-data/d10/input_test1_simple.txt"),
             expected_p1["input_test1_simple"]
@@ -191,7 +191,7 @@ mod tests {
 
     #[test]
     fn p2() {
-        let (_, expected_p2) = load_results("d10").unwrap();
+        let expected_p2 = load_results("d10", "p2");
         assert_eq!(
             maze2("test-data/d10/input_test3.txt"),
             expected_p2["input_test3"]
