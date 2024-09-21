@@ -52,7 +52,18 @@ pub fn spring1(file_path: &str) -> usize {
 }
 
 pub fn spring2(file_path: &str) -> usize {
-    0
+    let maps = parse_file(file_path);
+    let mut sum = 0;
+    for map in maps {
+        let mut wanted = Vec::new();
+        for _ in 0..5 {
+            for i in &map.1 {
+                wanted.push(*i);
+            }
+        }
+        sum += solve_line1(vec![map.0; 5].join("?"), &wanted);
+    }
+    sum
 }
 
 #[cfg(test)]
@@ -77,16 +88,27 @@ mod tests {
     fn p1() {
         let expected_p1 = load_results("d12", "p1");
         assert_eq!(
+            spring1("test-data/d12/input_test0.txt"),
+            expected_p1["input_test0"]
+        );
+        assert_eq!(
             spring1("test-data/d12/input_test1.txt"),
             expected_p1["input_test1"]
         );
         // assert_eq!(spring1("test-data/d12/input.txt"), expected_p1["input"]);
     }
 
-    // #[test]
-    // fn p2() {
-    // let expected_p2 = load_results("d12", "p2");
-    // assert_eq!(spring2("test-data/d12/input_test1.txt"), expected_p2["input_test1"]);
-    // assert_eq!(spring2("test-data/d12/input.txt"), expected_p2["input"]);
-    // }
+    #[test]
+    fn p2() {
+        let expected_p2 = load_results("d12", "p2");
+        assert_eq!(
+            spring2("test-data/d12/input_test0.txt"),
+            expected_p2["input_test0"]
+        );
+        // assert_eq!(
+        //     spring2("test-data/d12/input_test1.txt"),
+        //     expected_p2["input_test1"]
+        // );
+        // assert_eq!(spring2("test-data/d12/input.txt"), expected_p2["input"]);
+    }
 }
