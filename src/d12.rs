@@ -1,5 +1,7 @@
-use crate::d11::expansion;
-use std::fs;
+use std::{fs, thread};
+use std::sync::mpsc;
+use std::sync::mpsc::Sender;
+use std::time::Duration;
 
 fn parse_file(file_path: &str) -> Vec<(String, Vec<usize>)> {
     let file = fs::read_to_string(file_path).unwrap();
@@ -44,24 +46,61 @@ fn solve_line1(map: String, wanted_blocks: &Vec<usize>) -> usize {
 
 pub fn spring1(file_path: &str) -> usize {
     let maps = parse_file(file_path);
-    let mut sum = 0;
+    let (tx, rx) = mpsc::channel();
     for map in maps {
-        sum += solve_line1(map.0, &map.1);
+        let tx1: Sender<usize> = tx.clone();
+        thread::spawn(move || {
+            tx1.send(solve_line2(&map.0, &map.1, 0)).unwrap();
+        });
     }
-    sum
+    drop(tx);
+    rx.iter().sum()
 }
 
 pub fn spring2(file_path: &str) -> usize {
     let maps = parse_file(file_path);
-    let mut sum = 0;
+    let (tx, rx) = mpsc::channel();
     for map in maps {
-        let mut wanted = Vec::new();
-        for _ in 0..5 {
-            for i in &map.1 {
-                wanted.push(*i);
+        let tx1 = tx.clone();
+        thread::spawn(move || {
+            let mut wanted = Vec::new();
+            for _ in 0..5 {
+                for i in &map.1 {
+                    wanted.push(*i);
+                }
             }
+            tx1.send(solve_line2(&vec![map.0; 5].join("?"), &wanted, 0)).unwrap();
+        });
+    }
+    drop(tx);
+    rx.iter().sum()
+}
+
+fn solve_line2(map: &String, wanted_blocks: &[usize], search_start: usize) -> usize {
+    if wanted_blocks.len() == 0 {
+        if search_start < map.len() && map[search_start..map.len()].contains('#') {
+            return 0;
         }
-        sum += solve_line1(vec![map.0; 5].join("?"), &wanted);
+        return 1;
+    }
+    if search_start + wanted_blocks.iter().sum::<usize>() > map.len() {
+        return 0;
+    }
+    let mut sum = 0;
+    for i in search_start..map.len() {
+        if i + wanted_blocks[0] > map.len() {
+            return sum;
+        }
+        if map[search_start..i].contains('#') {
+            return sum;
+        }
+        if (i == search_start || map.chars().nth(i-1).unwrap() != '#')
+            && !map[i..i + wanted_blocks[0]].contains('.')
+            && (i + wanted_blocks[0] == map.len()
+                || map.chars().nth(i + wanted_blocks[0]).unwrap() != '#')
+        {
+            sum += solve_line2(&map, &wanted_blocks[1..], i + wanted_blocks[0] + 1)
+        }
     }
     sum
 }
@@ -86,29 +125,43 @@ mod tests {
 
     #[test]
     fn p1() {
-        let expected_p1 = load_results("d12", "p1");
+        let expected = load_results("d12", "p1");
         assert_eq!(
             spring1("test-data/d12/input_test0.txt"),
-            expected_p1["input_test0"]
+            expected["input_test0"]
         );
         assert_eq!(
             spring1("test-data/d12/input_test1.txt"),
-            expected_p1["input_test1"]
+            expected["input_test1"]
         );
-        // assert_eq!(spring1("test-data/d12/input.txt"), expected_p1["input"]);
+        assert_eq!(spring1("test-data/d12/input.txt"), expected["input"]);
+    }
+
+    #[test]
+    fn p12() {
+        let expected = load_results("d12", "p1");
+        assert_eq!(
+            spring1("test-data/d12/input_test0.txt"),
+            expected["input_test0"]
+        );
+        assert_eq!(
+            spring1("test-data/d12/input_test1.txt"),
+            expected["input_test1"]
+        );
+        assert_eq!(spring1("test-data/d12/input.txt"), expected["input"]);
     }
 
     #[test]
     fn p2() {
-        let expected_p2 = load_results("d12", "p2");
+        let expected = load_results("d12", "p2");
         assert_eq!(
             spring2("test-data/d12/input_test0.txt"),
-            expected_p2["input_test0"]
+            expected["input_test0"]
         );
-        // assert_eq!(
-        //     spring2("test-data/d12/input_test1.txt"),
-        //     expected_p2["input_test1"]
-        // );
-        // assert_eq!(spring2("test-data/d12/input.txt"), expected_p2["input"]);
+        assert_eq!(
+            spring2("test-data/d12/input_test1.txt"),
+            expected["input_test1"]
+        );
+        // assert_eq!(spring2("test-data/d12/input.txt"), expected["input"]);
     }
 }
