@@ -1,7 +1,7 @@
-use std::{fs, thread};
 use std::sync::mpsc;
 use std::sync::mpsc::Sender;
 use std::time::Duration;
+use std::{fs, thread};
 
 fn parse_file(file_path: &str) -> Vec<(String, Vec<usize>)> {
     let file = fs::read_to_string(file_path).unwrap();
@@ -69,7 +69,8 @@ pub fn spring2(file_path: &str) -> usize {
                     wanted.push(*i);
                 }
             }
-            tx1.send(solve_line2(&vec![map.0; 5].join("?"), &wanted, 0)).unwrap();
+            tx1.send(solve_line2(&vec![map.0; 5].join("?"), &wanted, 0))
+                .unwrap();
         });
     }
     drop(tx);
@@ -94,7 +95,7 @@ fn solve_line2(map: &String, wanted_blocks: &[usize], search_start: usize) -> us
         if map[search_start..i].contains('#') {
             return sum;
         }
-        if (i == search_start || map.chars().nth(i-1).unwrap() != '#')
+        if (i == search_start || map.chars().nth(i - 1).unwrap() != '#')
             && !map[i..i + wanted_blocks[0]].contains('.')
             && (i + wanted_blocks[0] == map.len()
                 || map.chars().nth(i + wanted_blocks[0]).unwrap() != '#')
