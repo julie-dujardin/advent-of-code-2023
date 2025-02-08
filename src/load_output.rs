@@ -18,3 +18,9 @@ pub fn load_results(day_dir: &str, part: &str) -> std::collections::HashMap<Stri
         .map(|(key, val)| (key.clone(), val.as_integer().unwrap() as usize))
         .collect()
 }
+
+pub fn check_results(day_dir: &str, part: &str, solver: fn(&str) -> usize) {
+    for (file, result) in load_results(day_dir, part) {
+        assert_eq!(solver(&format!("test-data/{day_dir}/{file}.txt")), result)
+    }
+}

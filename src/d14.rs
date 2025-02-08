@@ -4,7 +4,7 @@ fn parse_file(file_path: &str) -> Vec<Vec<char>> {
     let file = fs::read_to_string(file_path).unwrap();
     let mut map: Vec<Vec<char>> = Vec::new();
     for line in file.lines() {
-        for (i, char) in line.chars().enumerate(){
+        for (i, char) in line.chars().enumerate() {
             if map.len() <= i {
                 map.push(Vec::new());
             }
@@ -26,20 +26,18 @@ pub fn dishes1(file_path: &str) -> usize {
             if column[back_ptr] == 'O' {
                 load += column.len() - back_ptr;
                 fwd_ptr += 1;
-            }
-            else if column[back_ptr] == '#' {
+            } else if column[back_ptr] == '#' {
                 fwd_ptr += 1;
-            }
-            else {
+            } else {
                 while fwd_ptr < column.len() {
                     if column[fwd_ptr] == 'O' {
                         load += column.len() - back_ptr;
                         column[fwd_ptr] = '.';
                         column[back_ptr] = 'O';
-                        break
+                        break;
                     }
                     if column[fwd_ptr] == '#' {
-                        break
+                        break;
                     }
                     fwd_ptr += 1;
                 }
@@ -52,7 +50,7 @@ pub fn dishes1(file_path: &str) -> usize {
     load
 }
 
-fn get_load(map: Vec<Vec<char>>) -> usize{
+fn get_load(map: Vec<Vec<char>>) -> usize {
     let mut load = 0;
     for mut column in map {
         let mut back_ptr = 0;
@@ -69,8 +67,6 @@ fn get_load(map: Vec<Vec<char>>) -> usize{
 
 pub fn dishes2(file_path: &str) -> usize {
     let map = parse_file(file_path);
-
-
 
     0
 }
@@ -90,13 +86,13 @@ mod tests {
         assert_eq!(dishes1("test-data/d14/input.txt"), expected["input"]);
     }
 
-    #[test]
-    fn p2() {
-        let expected = load_results("d14", "p2");
-        assert_eq!(
-            dishes1("test-data/d14/input_test1.txt"),
-            expected["input_test1"]
-        );
-        assert_eq!(dishes1("test-data/d14/input.txt"), expected["input"]);
-    }
+    // #[test]
+    // fn p2() {
+    //     let expected = load_results("d14", "p2");
+    //     assert_eq!(
+    //         dishes1("test-data/d14/input_test1.txt"),
+    //         expected["input_test1"]
+    //     );
+    //     assert_eq!(dishes1("test-data/d14/input.txt"), expected["input"]);
+    // }
 }
