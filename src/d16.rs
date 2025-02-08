@@ -22,9 +22,8 @@ fn move_dir(i: isize, j: isize, direction: i32) -> (isize, isize, i32) {
     }
 }
 
-pub fn lava1(file_path: &str) -> usize {
-    let map = parse_file(file_path);
-    let mut rays = vec![(0isize, 0isize, 1)];
+fn solve(map: &Vec<Vec<char>>, start_ray: (isize, isize, i32)) -> usize {
+    let mut rays = vec![start_ray];
 
     let mut visited_positions = vec![vec![vec![false; 4]; map[0].len()]; map.len()];
 
@@ -103,6 +102,30 @@ pub fn lava1(file_path: &str) -> usize {
     })
 }
 
+pub fn lava1(file_path: &str) -> usize {
+    let map = parse_file(file_path);
+    solve(&map, (0isize, 0isize, 1))
+}
+
+pub fn lava2(file_path: &str) -> usize {
+    let map = parse_file(file_path);
+    let mut results = Vec::new();
+
+    results.push(solve(&map, (0isize, 0isize, 1)));
+    // TODO: keep a run-to-run cache so we're not running the same computations a ton of times
+    //  this runs in 350ms so good enough
+    for x in 0..map[0].len() {
+        results.push(solve(&map, (x as isize, 0isize, 2)));
+        results.push(solve(&map, (x as isize, (map.len() - 1) as isize, 0)));
+    }
+    for y in 0..map.len() {
+        results.push(solve(&map, (0isize, y as isize, 1)));
+        results.push(solve(&map, ((map[0].len() - 1) as isize, y as isize, 3)));
+    }
+
+    *results.iter().max().unwrap()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -113,8 +136,8 @@ mod tests {
         check_results("d16", "p1", lava1);
     }
 
-    // #[test]
-    // fn p2() {
-    //     check_results("d15", "p2", lava2);
-    // }
+    #[test]
+    fn p2() {
+        check_results("d16", "p2", lava2);
+    }
 }
