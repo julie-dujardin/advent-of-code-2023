@@ -103,9 +103,9 @@ fn get_move(
     }
 }
 
-pub fn crucible1(file_path: &str) -> usize {
+fn crucible(file_path: &str, min_straight: usize, max_straight: usize) -> usize {
     let map = parse_file(file_path);
-    let mut costs = vec![vec![vec![vec![None; 4]; 4]; map[0].len()]; map.len()];
+    let mut costs = vec![vec![vec![vec![None; max_straight + 1]; 4]; map[0].len()]; map.len()];
 
     let mut moves = BinaryHeap::new();
     // First move is special because we don't pay the cost to enter, simulate it & increment the straight count
@@ -145,17 +145,19 @@ pub fn crucible1(file_path: &str) -> usize {
             Direction::Down => 2,
             Direction::Left => 3,
         };
-        if costs[cy][cx][direction_idx][curr_move.straight_count].is_none()
-            || acc_cost < costs[cy][cx][direction_idx][curr_move.straight_count].unwrap()
-        {
-            // If this is the best or first way to get to this tile, save the new cost.
-            costs[cy][cx][direction_idx][curr_move.straight_count] = Some(acc_cost)
-        } else {
-            // Otherwise, keep going.
-            continue;
+        if curr_move.straight_count >= min_straight {
+            if costs[cy][cx][direction_idx][curr_move.straight_count].is_none()
+                || acc_cost < costs[cy][cx][direction_idx][curr_move.straight_count].unwrap()
+            {
+                // If this is the best or first way to get to this tile, save the new cost.
+                costs[cy][cx][direction_idx][curr_move.straight_count] = Some(acc_cost)
+            } else {
+                // Otherwise, keep going.
+                continue;
+            }
         }
 
-        if curr_move.straight_count < 3 {
+        if curr_move.straight_count < max_straight {
             moves.push(get_move(
                 &curr_move,
                 Direction::Up,
@@ -163,13 +165,15 @@ pub fn crucible1(file_path: &str) -> usize {
                 curr_move.straight_count + 1,
             ));
         }
-        moves.push(get_move(&curr_move, Direction::Left, acc_cost, 1));
-        moves.push(get_move(&curr_move, Direction::Right, acc_cost, 1));
+        if curr_move.straight_count >= min_straight {
+            moves.push(get_move(&curr_move, Direction::Left, acc_cost, 1));
+            moves.push(get_move(&curr_move, Direction::Right, acc_cost, 1));
+        }
     }
 
     let mut min_cost = None;
     for dir in 0..4 {
-        for straight in 0..4 {
+        for straight in 0..max_straight + 1 {
             if let Some(cost) = costs[map.len() - 1][map[0].len() - 1][dir][straight] {
                 min_cost = Some(min_cost.map_or(cost, |m: usize| m.min(cost)));
             }
@@ -178,9 +182,13 @@ pub fn crucible1(file_path: &str) -> usize {
     min_cost.unwrap()
 }
 
-// pub fn crucible2(file_path: &str) -> usize {
-//     0
-// }
+pub fn crucible1(file_path: &str) -> usize {
+    crucible(file_path, 0, 3)
+}
+
+pub fn crucible2(file_path: &str) -> usize {
+    crucible(file_path, 4, 10)
+}
 
 #[cfg(test)]
 mod tests {
@@ -192,8 +200,8 @@ mod tests {
         check_results("d17", "p1", crucible1);
     }
 
-    // #[test]
-    // fn p2() {
-    //     check_results("d17", "p2", crucible2);
-    // }
+    #[test]
+    fn p2() {
+        check_results("d17", "p2", crucible2);
+    }
 }
