@@ -1,6 +1,7 @@
-use std::fs;
+use std::collections::HashMap;
+use std::{fs, usize};
 
-fn parse_file(file_path: &str) -> Vec<(char, usize, String)> {
+fn parse_file1(file_path: &str) -> Vec<(char, usize)> {
     let file = fs::read_to_string(file_path).unwrap();
     let mut lines = Vec::new();
     for line in file.lines() {
@@ -8,7 +9,6 @@ fn parse_file(file_path: &str) -> Vec<(char, usize, String)> {
         let value = (
             elements[0].chars().nth(0).unwrap(),
             elements[1].parse::<usize>().unwrap(),
-            elements[2].to_string(),
         );
         lines.push(value);
     }
@@ -16,7 +16,7 @@ fn parse_file(file_path: &str) -> Vec<(char, usize, String)> {
 }
 
 fn display_map(
-    map: &Vec<Vec<char>>,
+    map: &HashMap<(usize, usize), char>,
     min_x: usize,
     max_x: usize,
     min_y: usize,
@@ -25,7 +25,7 @@ fn display_map(
 ) {
     for y in (min_y - border)..(max_y + 1 + border) {
         for x in (min_x - border)..(max_x + 1 + border) {
-            let cell = map[y][x];
+            let cell = map.get(&(x, y)).or(Some(&'.')).unwrap();
             print!("{cell}")
         }
         println!()
@@ -33,27 +33,30 @@ fn display_map(
 }
 
 pub fn lagoon1(file_path: &str) -> usize {
-    let instructions = parse_file(file_path);
+    let instructions = parse_file1(file_path);
     // init a map that's big enough, start in the middle
-    let mut map = vec![vec!['.'; 5000]; 5000];
+    let mut map = HashMap::new();
     let (mut curr_x, mut curr_y) = (2500, 2500);
-    map[curr_y][curr_x] = 'S';
+    map.insert((curr_x, curr_y), 'S');
 
     let (mut min_x, mut max_x, mut min_y, mut max_y) = (2500, 2500, 2500, 2500);
 
     let mut prev_instruction = 'S';
-    for (instruction, length, _) in instructions {
+    for (instruction, length) in instructions {
         for _ in 0..length {
-            map[curr_y][curr_x] = match (prev_instruction, instruction) {
-                ('S', _) => '#',
-                ('D' | 'U', 'D' | 'U') => '|',
-                ('R' | 'L', 'R' | 'L') => '-',
-                ('R', 'U') | ('D', 'L') => 'J',
-                ('R', 'D') | ('U', 'L') => '7',
-                ('D', 'R') | ('L', 'U') => 'L',
-                ('U', 'R') | ('L', 'D') => 'F',
-                (_, _) => panic!(),
-            };
+            map.insert(
+                (curr_x, curr_y),
+                match (prev_instruction, instruction) {
+                    ('S', _) => '#',
+                    ('D' | 'U', 'D' | 'U') => '|',
+                    ('R' | 'L', 'R' | 'L') => '-',
+                    ('R', 'U') | ('D', 'L') => 'J',
+                    ('R', 'D') | ('U', 'L') => '7',
+                    ('D', 'R') | ('L', 'U') => 'L',
+                    ('U', 'R') | ('L', 'D') => 'F',
+                    (_, _) => panic!(),
+                },
+            );
             prev_instruction = instruction;
             (curr_x, curr_y) = match instruction {
                 'U' => (curr_x, curr_y - 1),
@@ -84,15 +87,15 @@ pub fn lagoon1(file_path: &str) -> usize {
     for y in min_y..(max_y + 1) {
         let mut edge_count = 0;
         for x in min_x..(max_x + 1) {
-            if map[y][x] != '.' {
+            if let Some(cell) = map.get(&(x, y)) {
                 capacity += 1;
 
-                if let 'J' | '|' | 'L' = map[y][x] {
+                if let 'J' | '|' | 'L' = cell {
                     edge_count += 1;
                 }
             } else {
                 if edge_count % 2 != 0 {
-                    map[y][x] = '!';
+                    // map.insert((curr_x, curr_y), '!');
                     capacity += 1;
                 }
             }
@@ -102,6 +105,26 @@ pub fn lagoon1(file_path: &str) -> usize {
     // display_map(&map, min_x, max_x, min_y, max_y, 1);
 
     capacity
+}
+
+fn parse_file2(file_path: &str) -> Vec<(char, usize)> {
+    let file = fs::read_to_string(file_path).unwrap();
+    let mut lines = Vec::new();
+    for line in file.lines() {
+        let elements = line.split(' ').collect::<Vec<&str>>();
+        let value = (
+            match elements[2].chars().nth(7).unwrap() {
+                '0' => 'R',
+                '1' => 'D',
+                '2' => 'L',
+                '3' => 'U',
+                _ => panic!(),
+            },
+            usize::from_str_radix(&elements[2][2..7], 16).unwrap(),
+        );
+        lines.push(value);
+    }
+    lines
 }
 
 #[cfg(test)]
