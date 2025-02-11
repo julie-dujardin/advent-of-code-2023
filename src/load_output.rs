@@ -21,6 +21,11 @@ pub fn load_results(day_dir: &str, part: &str) -> std::collections::HashMap<Stri
 
 pub fn check_results(day_dir: &str, part: &str, solver: fn(&str) -> usize) {
     for (file, result) in load_results(day_dir, part) {
-        assert_eq!(solver(&format!("test-data/{day_dir}/{file}.txt")), result)
+        assert_eq!(
+            solver(&format!("test-data/{day_dir}/{file}.txt")),
+            result,
+            "failed: {}.txt",
+            file
+        )
     }
 }
