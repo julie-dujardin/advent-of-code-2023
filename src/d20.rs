@@ -1,10 +1,10 @@
+use crate::d8::lcm;
 use std::cmp::PartialEq;
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::fs;
 use std::ops::Not;
-use std::time::Instant;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 enum SignalType {
     Low,
     High,
@@ -137,6 +137,16 @@ fn broadcast_destinations(
     }
 }
 
+fn init_signals() -> VecDeque<Signal> {
+    let mut signals = VecDeque::new();
+    signals.push_back(Signal {
+        signal_type: SignalType::Low,
+        emitter: "button".to_string(),
+        target: "broadcaster".to_string(),
+    });
+    signals
+}
+
 fn handle_signal(
     curr_signal: Signal,
     signals: &mut VecDeque<Signal>,
@@ -173,7 +183,7 @@ fn handle_signal(
 
                 broadcast_destinations(
                     &destinations,
-                    if input_states.iter().all(|(input, state)| *state) {
+                    if input_states.iter().all(|(.., state)| *state) {
                         SignalType::Low
                     } else {
                         SignalType::High
@@ -199,12 +209,7 @@ pub fn pulse1(file_path: &str) -> usize {
     let mut low_pulse_count = 0;
 
     for _ in 0..1000 {
-        let mut signals = VecDeque::new();
-        signals.push_back(Signal {
-            signal_type: SignalType::Low,
-            emitter: "button".to_string(),
-            target: "broadcaster".to_string(),
-        });
+        let mut signals = init_signals();
 
         while let Some(curr_signal) = signals.pop_front() {
             if let SignalType::High = curr_signal.signal_type {
@@ -220,34 +225,64 @@ pub fn pulse1(file_path: &str) -> usize {
     high_pulse_count * low_pulse_count
 }
 
+fn get_nodes_parents(nodes: &Vec<String>, modules: &HashMap<String, Module>) -> Vec<String> {
+    let mut parents = Vec::new();
+    for (module_name, module) in modules.iter() {
+        for node in nodes.iter() {
+            if module.destinations().contains(node) {
+                parents.push(module_name.clone())
+            }
+        }
+    }
+    parents
+}
+
 pub fn pulse2(file_path: &str) -> usize {
     let mut modules = parse_file(file_path);
-    let time_start = Instant::now();
+
+    let rx_parents = get_nodes_parents(&vec!["rx".to_string()], &modules);
+    let rx_grandparents = get_nodes_parents(&rx_parents, &modules);
+    // let rx_great1grandparents = get_nodes_parents(&rx_grandparents, &modules);
+    // let rx_great2grandparents = get_nodes_parents(&rx_great1grandparents, &modules);
+
+    // println!("{:?}", rx_great2grandparents); // does whatever
+    // println!("{:?}", rx_great1grandparents); // what's the cycle length for each of those to get high, so they send low
+    // println!("{:?}", rx_grandparents); // gets low, sends high
+    // println!("{:?}", rx_parents); // gets high, sends low
+
+    let mut grandparents_activate = HashMap::new();
+    for grandparent in rx_grandparents {
+        grandparents_activate.insert(grandparent, (None, None));
+    }
 
     let mut i = 0;
-    loop {
-        let mut signals = VecDeque::new();
-        signals.push_back(Signal {
-            signal_type: SignalType::Low,
-            emitter: "button".to_string(),
-            target: "broadcaster".to_string(),
-        });
+    while grandparents_activate
+        .iter()
+        .any(|(.., (.., finish))| finish.is_none())
+    {
+        let mut signals = init_signals();
 
         while let Some(curr_signal) = signals.pop_front() {
-            if let SignalType::Low = curr_signal.signal_type {
-                if curr_signal.target == "rx" {
-                    return i;
+            if curr_signal.signal_type == SignalType::Low {
+                if let Some((activate, finish)) = grandparents_activate.get_mut(&curr_signal.target)
+                {
+                    if activate.is_none() {
+                        *activate = Some(i);
+                    } else if finish.is_none() {
+                        *finish = Some(i);
+                    }
                 }
             }
 
             handle_signal(curr_signal, &mut signals, &mut modules);
         }
         i += 1;
-
-        if (Instant::now() - time_start).as_secs() >= 10 {
-            return i;
-        }
     }
+
+    lcm(grandparents_activate
+        .iter()
+        .map(|(.., (activate, finish))| finish.unwrap() - activate.unwrap())
+        .collect::<Vec<usize>>())
 }
 
 #[cfg(test)]
@@ -260,8 +295,8 @@ mod tests {
         check_results("d20", "p1", pulse1);
     }
 
-    // #[test]
-    // fn p2() {
-    //     check_results("d20", "p2", pulse2);
-    // }
+    #[test]
+    fn p2() {
+        check_results("d20", "p2", pulse2);
+    }
 }
