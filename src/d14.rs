@@ -56,10 +56,7 @@ fn parse_file2(file_path: &str) -> Vec<Vec<char>> {
     let file = fs::read_to_string(file_path).unwrap();
     let mut lines = Vec::new();
     for line in file.lines() {
-        lines.push(
-            line.chars()
-                .collect(),
-        );
+        lines.push(line.chars().collect());
     }
     lines
 }
@@ -85,29 +82,17 @@ enum Direction {
 
 fn get_ptr_max(map: &Vec<Vec<char>>, direction: &Direction) -> usize {
     match direction {
-        Direction::North | Direction::South => {
-            map.len()
-        }
-        Direction::West | Direction::East => {
-            map[0].len()
-        }
+        Direction::North | Direction::South => map.len(),
+        Direction::West | Direction::East => map[0].len(),
     }
 }
 
 fn get_map_at(map: &Vec<Vec<char>>, direction: &Direction, x: usize, y: usize) -> char {
     match direction {
-        Direction::North => {
-            map[y][x]
-        }
-        Direction::West => {
-            map[x][y]
-        }
-        Direction::South => {
-            map[map.len() - y - 1][x]
-        }
-        Direction::East => {
-            map[x][map[0].len() - y - 1]
-        }
+        Direction::North => map[y][x],
+        Direction::West => map[x][y],
+        Direction::South => map[map.len() - y - 1][x],
+        Direction::East => map[x][map[0].len() - y - 1],
     }
 }
 
@@ -138,7 +123,9 @@ fn rotate(map: &mut Vec<Vec<char>>, direction: Direction) {
         while y_back_ptr < ptr_max && y_fwd_ptr < ptr_max {
             match get_map_at(&map, &direction, x, y_fwd_ptr) {
                 'O' => {
-                    while get_map_at(&map, &direction, x, y_back_ptr) != '.' && y_back_ptr + 1 < y_fwd_ptr {
+                    while get_map_at(&map, &direction, x, y_back_ptr) != '.'
+                        && y_back_ptr + 1 < y_fwd_ptr
+                    {
                         y_back_ptr += 1
                     }
                     if get_map_at(&map, &direction, x, y_back_ptr) == '.' {
@@ -147,15 +134,15 @@ fn rotate(map: &mut Vec<Vec<char>>, direction: Direction) {
                         y_back_ptr += 1;
                     }
                     y_fwd_ptr += 1;
-                },
+                }
                 '#' => {
                     y_back_ptr = y_fwd_ptr;
                     y_fwd_ptr += 1;
-                },
+                }
                 '.' => {
                     y_fwd_ptr += 1;
                 }
-                _ => unreachable!()
+                _ => unreachable!(),
             }
         }
     }
@@ -180,13 +167,17 @@ pub fn dishes10(file_path: &str) -> usize {
 pub fn dishes11(file_path: &str) -> usize {
     let mut map = parse_file2(file_path);
     print_map(&map);
-    for dir in vec![Direction::North, Direction::West, Direction::South, Direction::East] {
+    for dir in vec![
+        Direction::North,
+        Direction::West,
+        Direction::South,
+        Direction::East,
+    ] {
         rotate(&mut map, dir);
         print_map(&map);
     }
     get_load(&map)
 }
-
 
 pub fn dishes2(file_path: &str) -> usize {
     let mut map = parse_file2(file_path);
@@ -194,19 +185,23 @@ pub fn dishes2(file_path: &str) -> usize {
     let mut weights = HashMap::new();
 
     for i in 0..1_000_000_000 {
-        for dir in vec![Direction::North, Direction::West, Direction::South, Direction::East] {
+        for dir in vec![
+            Direction::North,
+            Direction::West,
+            Direction::South,
+            Direction::East,
+        ] {
             rotate(&mut map, dir);
         }
 
         let mut hash = DefaultHasher::new();
         map.hash(&mut hash);
         let curr_hash = hash.finish();
-        if let Some(iter_start_idx) = states.get(&curr_hash){
+        if let Some(iter_start_idx) = states.get(&curr_hash) {
             let loop_len = i - iter_start_idx;
             let result_idx = (1_000_000_000 - iter_start_idx) % loop_len + iter_start_idx - 1;
             return weights[&result_idx];
-        }
-        else {
+        } else {
             states.insert(curr_hash, i);
             weights.insert(i, get_load(&map));
         }
