@@ -110,7 +110,7 @@ impl Map {
     }
 }
 
-pub fn bricks1(file_path: &str) -> usize {
+fn parse_n_gravity(file_path: &str) -> (Map, Vec<Brick>) {
     let mut bricks = parse_file(file_path);
     let mut map = Map {
         storage: Default::default(),
@@ -118,7 +118,10 @@ pub fn bricks1(file_path: &str) -> usize {
     };
     map.push_bricks(&bricks);
     map.gravity(&mut bricks);
+    (map, bricks)
+}
 
+fn get_ancestors(map: Map, bricks: &Vec<Brick>) -> HashMap<usize, HashSet<usize>> {
     let mut bricks_ancestors = HashMap::new();
     // high -> [low]
     for (i, _) in bricks.iter().enumerate() {
@@ -136,6 +139,13 @@ pub fn bricks1(file_path: &str) -> usize {
         }
     }
 
+    bricks_ancestors
+}
+
+pub fn bricks1(file_path: &str) -> usize {
+    let (map, bricks) = parse_n_gravity(file_path);
+    let bricks_ancestors = get_ancestors(map, &bricks);
+
     let mut can_remove: HashSet<usize> = HashSet::from_iter(0..bricks.len());
     for (_higher, lower) in bricks_ancestors.iter() {
         if lower.len() == 1 {
@@ -144,6 +154,21 @@ pub fn bricks1(file_path: &str) -> usize {
     }
 
     can_remove.len()
+}
+
+pub fn bricks2(file_path: &str) -> usize {
+    let (map, bricks) = parse_n_gravity(file_path);
+    let bricks_ancestors = get_ancestors(map, &bricks);
+
+    let roots = bricks_ancestors
+        .iter()
+        .filter(|&(higher, lower)| lower.iter().count() == 0)
+        .map(|(higher, lower)| (*higher, 1))
+        .collect::<HashMap<usize, usize>>();
+
+    println!("{file_path} {:?} {:?}", roots, bricks_ancestors);
+
+    0
 }
 
 #[cfg(test)]
@@ -172,5 +197,10 @@ mod tests {
     #[test]
     fn p1() {
         check_results("d22", "p1", bricks1);
+    }
+
+    #[test]
+    fn p2() {
+        check_results("d22", "p2", bricks2);
     }
 }
