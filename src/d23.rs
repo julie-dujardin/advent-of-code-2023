@@ -15,41 +15,50 @@ fn get_max_path_len(
     start_y: i32,
     map: &Vec<Vec<char>>,
     visited: &mut HashSet<(i32, i32)>,
-    path_length: usize,
+    mut path_length: usize,
+    ignore_slopes: bool,
 ) -> usize {
-    if start_x as usize == map[0].len() - 2 && start_y as usize == map.len() - 1 {
-        return path_length;
-    }
+    let mut next_positions = vec![(start_x, start_y)];
 
-    visited.insert((start_x, start_y));
-    let mut next_positions = Vec::new();
+    // As long as the path is linear, don't do recursive calls, or we'll hit the stack limit for real files.
+    while next_positions.len() == 1 {
+        let (start_x, start_y) = next_positions.pop().unwrap();
 
-    for (check_x_offset, check_y_offset) in vec![(0, -1), (1, 0), (0, 1), (-1, 0)] {
-        let check_x = start_x + check_x_offset;
-        let check_y = start_y + check_y_offset;
-        // out-of-bounds
-        if check_x < 0
-            || check_y < 0
-            || check_x >= map[0].len() as i32
-            || check_y >= map.len() as i32
-        {
-            continue;
+        if start_x as usize == map[0].len() - 2 && start_y as usize == map.len() - 1 {
+            return path_length;
         }
-        // can't be a wall or already visited
-        let check_tile = map[check_y as usize][check_x as usize];
-        if check_tile == '#' || visited.contains(&(check_x, check_y)) {
-            continue;
-        }
-        // go the correct way
-        if check_tile == '^' && check_y_offset != -1
-            || check_tile == 'v' && check_y_offset != 1
-            || check_tile == '>' && check_x_offset != 1
-            || check_tile == '<' && check_x_offset != -1
-        {
-            continue;
-        }
+        visited.insert((start_x, start_y));
+        path_length += 1;
 
-        next_positions.push((check_x, check_y))
+        for (check_x_offset, check_y_offset) in vec![(0, -1), (1, 0), (0, 1), (-1, 0)] {
+            let check_x = start_x + check_x_offset;
+            let check_y = start_y + check_y_offset;
+            // out-of-bounds
+            if check_x < 0
+                || check_y < 0
+                || check_x >= map[0].len() as i32
+                || check_y >= map.len() as i32
+            {
+                continue;
+            }
+            // can't be a wall or already visited
+            let check_tile = map[check_y as usize][check_x as usize];
+            if check_tile == '#' || visited.contains(&(check_x, check_y)) {
+                continue;
+            }
+            // go the correct way
+            if check_tile == '^' && check_y_offset != -1
+                || check_tile == 'v' && check_y_offset != 1
+                || check_tile == '>' && check_x_offset != 1
+                || check_tile == '<' && check_x_offset != -1
+            {
+                if !ignore_slopes {
+                    continue;
+                }
+            }
+
+            next_positions.push((check_x, check_y))
+        }
     }
 
     if next_positions.len() == 0 {
@@ -59,9 +68,17 @@ fn get_max_path_len(
 
     let lengths = next_positions
         .iter()
-        .map(|(x, y)| get_max_path_len(*x, *y, map, &mut visited.clone(), path_length + 1))
+        .map(|(x, y)| {
+            get_max_path_len(
+                *x,
+                *y,
+                map,
+                &mut visited.clone(),
+                path_length,
+                ignore_slopes,
+            )
+        })
         .collect::<Vec<usize>>();
-    println!("{:?}; {}; x={start_x}; y={start_y}", lengths, path_length);
     *lengths.iter().max().unwrap()
 }
 
@@ -69,7 +86,14 @@ pub fn walk1(file_path: &str) -> usize {
     let map = parse_map(file_path);
 
     let mut visited = HashSet::new();
-    get_max_path_len(1, 0, &map, &mut visited, 0)
+    get_max_path_len(1, 0, &map, &mut visited, 0, false)
+}
+
+pub fn walk2(file_path: &str) -> usize {
+    let map = parse_map(file_path);
+
+    let mut visited = HashSet::new();
+    get_max_path_len(1, 0, &map, &mut visited, 0, true)
 }
 
 #[cfg(test)]
@@ -80,5 +104,10 @@ mod tests {
     #[test]
     fn p1() {
         check_results("d23", "p1", walk1);
+    }
+
+    #[test]
+    fn p2() {
+        check_results("d23", "p2", walk2);
     }
 }
