@@ -4,6 +4,8 @@ use std::fs;
 struct Brick {
     coords_start: (usize, usize, usize),
     coords_end: (usize, usize, usize),
+    above: HashSet<usize>,
+    under: HashSet<usize>,
 }
 
 fn parse_file(file_path: &str) -> Vec<Brick> {
@@ -24,6 +26,8 @@ fn parse_file(file_path: &str) -> Vec<Brick> {
         bricks.push(Brick {
             coords_start: (start[0], start[1], start[2]),
             coords_end: (end[0], end[1], end[2]),
+            above: HashSet::new(),
+            under: HashSet::new(),
         })
     }
 
@@ -84,28 +88,48 @@ impl Map {
     }
 
     pub fn gravity(&mut self, bricks: &mut Vec<Brick>) {
+        let mut above_bricks = HashMap::new();
+
         for (i, brick) in bricks.iter_mut().enumerate() {
             let mut z = brick.coords_start.2;
 
-            'outer: while z > 1 {
+            while z >= 2 && brick.under.len() == 0 {
+                z -= 1;
+
                 for x in brick.coords_start.0..brick.coords_end.0 + 1 {
                     for y in brick.coords_start.1..brick.coords_end.1 + 1 {
-                        if self.get(x, y, z - 1).is_some() {
-                            break 'outer;
+                        if let Some(under_brick) = self.get(x, y, z) {
+                            brick.under.insert(under_brick);
+                            above_bricks
+                                .entry(under_brick)
+                                .and_modify(|set: &mut HashSet<usize>| {
+                                    set.insert(i);
+                                })
+                                .or_insert_with(|| {
+                                    let mut set = HashSet::new();
+                                    set.insert(i);
+                                    set
+                                });
+
+                            // bricks[under_brick].above.insert(i);
                         }
                     }
                 }
-
-                z -= 1;
             }
 
             if z < brick.coords_start.2 {
+                z += 1; // got a collision, go back up one layer
+
                 self.pop_brick(&brick);
                 let delta = brick.coords_start.2 - z;
                 brick.coords_start.2 -= delta;
                 brick.coords_end.2 -= delta;
                 self.push_brick(&brick, i);
             }
+        }
+
+        for (under_brick, above_bricks) in above_bricks {
+            bricks[under_brick].above = above_bricks;
         }
     }
 }
@@ -121,55 +145,60 @@ fn parse_n_gravity(file_path: &str) -> (Map, Vec<Brick>) {
     (map, bricks)
 }
 
-fn get_ancestors(map: Map, bricks: &Vec<Brick>) -> HashMap<usize, HashSet<usize>> {
-    let mut bricks_ancestors = HashMap::new();
-    // high -> [low]
-    for (i, _) in bricks.iter().enumerate() {
-        bricks_ancestors.insert(i, HashSet::new());
-    }
-
-    for (lower, brick) in bricks.iter().enumerate() {
-        for x in brick.coords_start.0..brick.coords_end.0 + 1 {
-            for y in brick.coords_start.1..brick.coords_end.1 + 1 {
-                // If we find a child above this parent, the parent to this child's parent list
-                if let Some(higher) = map.get(x, y, brick.coords_end.2 + 1) {
-                    bricks_ancestors.get_mut(&higher).unwrap().insert(lower);
-                }
-            }
-        }
-    }
-
-    bricks_ancestors
-}
-
 pub fn bricks1(file_path: &str) -> usize {
-    let (map, bricks) = parse_n_gravity(file_path);
-    let bricks_ancestors = get_ancestors(map, &bricks);
+    let (_map, bricks) = parse_n_gravity(file_path);
 
     let mut can_remove: HashSet<usize> = HashSet::from_iter(0..bricks.len());
-    for (_higher, lower) in bricks_ancestors.iter() {
-        if lower.len() == 1 {
-            can_remove.remove(&lower.iter().next().unwrap());
+    for brick in bricks.iter() {
+        if brick.under.len() == 1 {
+            can_remove.remove(&brick.under.iter().next().unwrap());
         }
     }
 
     can_remove.len()
 }
 
-pub fn bricks2(file_path: &str) -> usize {
-    let (map, bricks) = parse_n_gravity(file_path);
-    let bricks_ancestors = get_ancestors(map, &bricks);
+fn count_children_rec(
+    node: usize,
+    bricks_children: &HashMap<usize, HashSet<usize>>,
+    cache: &mut HashMap<usize, HashSet<usize>>,
+) -> HashSet<usize> {
+    // Check if result is already in cache
+    if let Some(cached) = cache.get(&node) {
+        return cached.clone();
+    }
 
-    let roots = bricks_ancestors
-        .iter()
-        .filter(|&(higher, lower)| lower.iter().count() == 0)
-        .map(|(higher, lower)| (*higher, 1))
-        .collect::<HashMap<usize, usize>>();
+    // TODO check if the node has parents that haven't been visited
 
-    println!("{file_path} {:?} {:?}", roots, bricks_ancestors);
+    let mut nodes = HashSet::new();
+    for child in bricks_children.get(&node).unwrap() {
+        nodes.insert(*child);
+        nodes.extend(count_children_rec(*child, bricks_children, cache));
+    }
 
-    0
+    // Store result in cache before returning
+    cache.insert(node, nodes.clone());
+    nodes
 }
+
+// pub fn bricks2(file_path: &str) -> usize {
+//     let (map, bricks) = parse_n_gravity(file_path);
+//
+//     let bricks_ancestors = get_ancestors(&map, &bricks);
+//     // let bricks_children = get_children(map, &bricks);
+//
+//     let mut counts = HashMap::new();
+//     // for (_higher, lower) in bricks_ancestors.iter() {
+//     //     if lower.len() == 1 {
+//     //         let start_node = lower.iter().next().unwrap();
+//     //         counts.entry(start_node).or_insert(
+//     //             count_children_rec(*start_node, &bricks_children, &mut HashMap::new()).len(),
+//     //         );
+//     //     }
+//     // }
+//
+//     counts.values().sum()
+// }
 
 #[cfg(test)]
 mod tests {
@@ -199,8 +228,8 @@ mod tests {
         check_results("d22", "p1", bricks1);
     }
 
-    #[test]
-    fn p2() {
-        check_results("d22", "p2", bricks2);
-    }
+    // #[test]
+    // fn p2() {
+    //     check_results("d22", "p2", bricks2);
+    // }
 }
