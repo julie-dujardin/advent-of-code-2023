@@ -165,7 +165,6 @@ fn get_max_graph_len(
                 &graph,
                 final_node,
                 *next_node,
-                // visited,
                 new_visited.clone(),
                 path_length + distance,
             )
@@ -192,7 +191,6 @@ pub fn walk2(file_path: &str) -> usize {
 
     let final_node = ((map[0].len() - 2) as i32, (map.len() - 1) as i32);
     get_max_graph_len(&graph, final_node, (1, 0), HashSet::new(), 0)
-    // 0
 }
 
 #[cfg(test)]
