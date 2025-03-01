@@ -106,7 +106,7 @@ fn build_graph(
                 );
                 new_positions = new_positions
                     .iter()
-                    .map(|((check_x, check_y), last_node, distance_from_node)| {
+                    .map(|((check_x, check_y), _last_node, _distance_from_node)| {
                         ((*check_x, *check_y), (start_x, start_y), 1) // start at 1 to account for the cost of leaving the node
                     })
                     .collect();

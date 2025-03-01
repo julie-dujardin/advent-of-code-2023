@@ -157,10 +157,6 @@ pub fn snow1(file_path: &str) -> usize {
     count_nodes(g1, &connections) * count_nodes(g2, &connections)
 }
 
-pub fn snow2(file_path: &str) -> usize {
-    0
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -170,9 +166,4 @@ mod tests {
     fn p1() {
         check_results("d25", "p1", snow1);
     }
-
-    // #[test]
-    // fn p2() {
-    //     check_results("d25", "p2", snow2);
-    // }
 }

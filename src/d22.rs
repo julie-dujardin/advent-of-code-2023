@@ -2,7 +2,7 @@ use std::collections::{HashMap, HashSet};
 use std::fs;
 
 struct Brick {
-    id: usize,
+    _id: usize,
     coords_start: (usize, usize, usize),
     coords_end: (usize, usize, usize),
     above: HashSet<usize>,
@@ -25,7 +25,7 @@ fn parse_file(file_path: &str) -> Vec<Brick> {
             .map(|x| x.parse::<usize>().unwrap())
             .collect::<Vec<usize>>();
         bricks.push(Brick {
-            id: i,
+            _id: i,
             coords_start: (start[0], start[1], start[2]),
             coords_end: (end[0], end[1], end[2]),
             above: HashSet::new(),
