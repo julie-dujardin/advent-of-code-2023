@@ -90,6 +90,16 @@ pub fn hail1(file_path: &str) -> usize {
     collision_count
 }
 
+pub fn hail2 (file_path: &str) -> usize {
+    let lines = parse_lines(file_path);
+
+    for hail in lines[..3].iter() {
+
+    }
+
+    0
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
